@@ -22,9 +22,10 @@ namespace octdoc
 				COM_Ptr<ID3D11ShaderResourceView> m_shaderResourceView;
 
 			private:
-				void CreateTexture(Graphics_DX11& graphics, void* data, int width, int height);
+				void CreateTexture(Graphics_DX11& graphics, void* data, unsigned width, unsigned height);
 				void LoadTexture(Graphics_DX11& graphics, const wchar_t* filename);
 				void LoadTarga(Graphics_DX11& graphics, const wchar_t* filename);
+				void LoadWithWIC(Graphics_DX11& graphics, const wchar_t* filename);
 
 			public:
 				Texture_DX11(Graphics_DX11& graphics, void* data, int width, int height);

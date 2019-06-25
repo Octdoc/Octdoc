@@ -20,13 +20,6 @@ namespace octdoc
 				COM_Ptr<ID3D11Texture2D> m_depthBuffer;
 				D3D11_VIEWPORT m_viewPort;
 
-			private:
-				void CreateTexture(Graphics_DX11& graphics, int width, int height);
-				void CreateDepthBuffer(Graphics_DX11& graphics, int width, int height);
-				void CreateDepthStencilView(Graphics_DX11& graphics, int width, int height);
-				void CreateRenderTarget(Graphics_DX11& graphics, int width, int height);
-				void CreateViewPort(Graphics_DX11& graphics, int width, int height);
-
 			protected:
 				virtual void ClearRenderTarget(Graphics& graphics, float clearColor[4]) override;
 

@@ -73,14 +73,13 @@ void TestArea::OnStart(octdoc::gfx::Graphics& graphics)
 	loader.ChangeModelType(octdoc::gfx::ModelType::PTM);
 
 	//SetTextureMandelbrot(loader.getTexture(0));
-	SetTextureToFile(loader.getTexture(0), L"Media/white.png");
+	SetTextureToFile(loader.getTexture(0), L"Media/test.png");
 	SetTextureToFile(loader.getNormalmap(0), L"Media/normalmap.png");
 
 	m_entity = octdoc::gfx::Entity::CreateP(graphics, loader);
 	loader.CreateCube(octdoc::mth::float3(-1.0f), octdoc::mth::float3(2.0f), octdoc::gfx::ModelType::PTN);
 	m_tv = octdoc::gfx::Entity::CreateP(graphics, loader);
 	m_tvScreen = octdoc::gfx::RenderTargetTexture::CreateP(graphics, 512, 512);
-	auto tmptex = octdoc::gfx::Texture::CreateP(graphics, L"Media/test.png");
 	m_tv->getMaterial(0)->setTexture(m_tvScreen);
 	m_camera.position.z = -5.0f;
 	m_sampler = octdoc::gfx::SamplerState::CreateP(graphics, true, true);

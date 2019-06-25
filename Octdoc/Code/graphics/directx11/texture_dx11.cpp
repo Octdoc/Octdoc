@@ -1,8 +1,8 @@
 #include "texture_dx11.h"
 #include "helpers/fileloaders.h"
-#include "C://Program Files (x86)/Microsoft DirectX SDK (June 2010)/Include/D3DX11tex.h"
+#include<wincodec.h>
 
-#pragma comment (lib, "C://Program Files (x86)/Microsoft DirectX SDK (June 2010)/Lib/x64/D3Dx11.lib")
+#pragma comment (lib, "windowscodecs.lib")
 
 namespace octdoc
 {
@@ -22,7 +22,7 @@ namespace octdoc
 					}
 				}
 			}
-			void Texture_DX11::CreateTexture(Graphics_DX11& graphics, void* data, int width, int height)
+			void Texture_DX11::CreateTexture(Graphics_DX11& graphics, void* data, unsigned width, unsigned height)
 			{
 				ID3D11Device* device = graphics.getDevice();
 				ID3D11DeviceContext* context = graphics.getContext();
@@ -49,10 +49,7 @@ namespace octdoc
 				srd.SysMemSlicePitch = 0;
 				hr = device->CreateTexture2D(&t2dd, &srd, &texture);
 				if (FAILED(hr))
-				{
-					auto error = GetLastError();
 					throw std::exception("Failed to create texture");
-				}
 
 				srvd.Format = t2dd.Format;
 				srvd.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
@@ -62,6 +59,9 @@ namespace octdoc
 				hr = device->CreateShaderResourceView(texture, &srvd, &m_shaderResourceView);
 				if (FAILED(hr))
 					throw std::exception("Failed to create shader resource view");
+
+				m_width = width;
+				m_height = height;
 			}
 			void Texture_DX11::LoadTexture(Graphics_DX11& graphics, const wchar_t* filename)
 			{
@@ -69,25 +69,56 @@ namespace octdoc
 				if (extension == L".tga")
 					LoadTarga(graphics, filename);
 				else
-				{
-					HRESULT hr;
-					hr = D3DX11CreateShaderResourceViewFromFile(graphics.getDevice(), filename, nullptr, nullptr, &m_shaderResourceView, nullptr);
-					if (FAILED(hr))
-						throw std::exception((std::string("Failed to create texture: ") + hlp::ToString(filename)).c_str());
-				}
+					LoadWithWIC(graphics, filename);
 			}
 			void Texture_DX11::LoadTarga(Graphics_DX11& graphics, const wchar_t* filename)
 			{
 				std::vector<unsigned char> pixels;
-				int width, height;
+				unsigned width, height;
 				hlp::LoadTargaFromFile(filename, pixels, width, height);
+				CreateTexture(graphics, pixels.data(), width, height);
+			}
+			void Texture_DX11::LoadWithWIC(Graphics_DX11& graphics, const wchar_t* filename)
+			{
+				HRESULT hr;
+				COM_Ptr<IWICImagingFactory> factory;
+
+				hr = CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory, (LPVOID*)& factory);
+				if (FAILED(hr))
+					throw std::exception("Failed to create imaging factory");
+
+				COM_Ptr<IWICBitmapDecoder> decoder;
+				hr = factory->CreateDecoderFromFilename(filename, NULL, GENERIC_READ, WICDecodeMetadataCacheOnLoad, &decoder);
+				if (FAILED(hr))
+					throw std::exception(("Failed to create image decoder for image: " + hlp::ToString(filename)).c_str());
+
+				COM_Ptr<IWICBitmapFrameDecode> frame;
+				hr = decoder->GetFrame(0, &frame);
+				if (FAILED(hr))
+					throw std::exception("Failed to get image from decoder");
+
+				COM_Ptr<IWICFormatConverter> converter;
+				hr = factory->CreateFormatConverter(&converter);
+				if (FAILED(hr))
+					throw std::exception("Failed to create format converter");
+
+				hr = converter->Initialize(frame, GUID_WICPixelFormat32bppPRGBA, WICBitmapDitherTypeNone, NULL, 0.0, WICBitmapPaletteTypeCustom);
+				if (FAILED(hr))
+					throw std::exception("Failed to initialize converter");
+
+				unsigned width, height;
+				converter->GetSize(&width, &height);
+				std::vector<unsigned char> pixels(width * height * 4);
+				hr = converter->CopyPixels(nullptr, width * 4, pixels.size(), pixels.data());
+				if (FAILED(hr))
+					throw std::exception("Failed to copy image pixels");
 				CreateTexture(graphics, pixels.data(), width, height);
 			}
 			Texture_DX11::Texture_DX11(Graphics_DX11& graphics, void* data, int width, int height)
 			{
 				CreateTexture(graphics, data, width, height);
 			}
-			Texture_DX11::Texture_DX11(Graphics_DX11& graphics, const wchar_t *filename)
+			Texture_DX11::Texture_DX11(Graphics_DX11& graphics, const wchar_t* filename)
 			{
 				LoadTexture(graphics, filename);
 			}
@@ -103,7 +134,7 @@ namespace octdoc
 			{
 				return std::make_unique<Texture_DX11>(graphics, data, width, height);
 			}
-			Texture_DX11::P Texture_DX11::CreateP(Graphics_DX11& graphics, const wchar_t *filename)
+			Texture_DX11::P Texture_DX11::CreateP(Graphics_DX11& graphics, const wchar_t* filename)
 			{
 				auto tex = m_loadedTextures.find(filename);
 				if (tex != m_loadedTextures.end())
@@ -112,13 +143,13 @@ namespace octdoc
 				m_loadedTextures[filename] = texture;
 				return texture;
 			}
-			Texture_DX11::U Texture_DX11::CreateU(Graphics_DX11& graphics, const wchar_t *filename)
+			Texture_DX11::U Texture_DX11::CreateU(Graphics_DX11& graphics, const wchar_t* filename)
 			{
 				return std::make_unique<Texture_DX11>(graphics, filename);
 			}
 			void Texture_DX11::SetToRender(Graphics& graphics, unsigned index)
 			{
-				ID3D11DeviceContext *context = ((Graphics_DX11&)graphics).getContext();
+				ID3D11DeviceContext* context = ((Graphics_DX11&)graphics).getContext();
 				context->PSSetShaderResources(index, 1, &m_shaderResourceView);
 			}
 		}

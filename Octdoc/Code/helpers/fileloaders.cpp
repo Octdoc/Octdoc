@@ -6,7 +6,7 @@ namespace octdoc
 {
 	namespace hlp
 	{
-		void LoadTargaFromFile(const wchar_t* filename, std::vector<unsigned char>& pixels, int& width, int& height)
+		void LoadTargaFromFile(const wchar_t* filename, std::vector<unsigned char>& pixels, unsigned& width, unsigned& height)
 		{
 			struct TargaHeader
 			{

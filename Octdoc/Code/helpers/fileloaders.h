@@ -7,6 +7,6 @@ namespace octdoc
 {
 	namespace hlp
 	{
-		void LoadTargaFromFile(const wchar_t* filename, std::vector<uint8>& pixelData, int& width, int& height);
+		void LoadTargaFromFile(const wchar_t* filename, std::vector<uint8>& pixelData, unsigned& width, unsigned& height);
 	}
 }

@@ -27,6 +27,8 @@ namespace octdoc
 
 			inline void setTexture(Texture::P texture) { m_texture = texture; }
 			inline void setNormalmap(Texture::P normalmap) { m_normalmap = normalmap; }
+			inline Texture::P getTexture() { return m_texture; }
+			inline Texture::P getNormalmap() { return m_normalmap; }
 			virtual void SetToRender(Graphics& graphics);
 		};
 	}

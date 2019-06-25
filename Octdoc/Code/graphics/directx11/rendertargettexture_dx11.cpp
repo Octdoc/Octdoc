@@ -81,6 +81,9 @@ namespace octdoc
 				m_viewPort.Height = static_cast<float>(height);
 				m_viewPort.MinDepth = 0.0f;
 				m_viewPort.MaxDepth = 1.0f;
+
+				m_width = width;
+				m_height = height;
 			}
 			RenderTargetTexture_DX11::P RenderTargetTexture_DX11::CreateP(Graphics_DX11& graphics, int width, int height)
 			{
