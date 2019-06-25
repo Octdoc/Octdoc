@@ -1,4 +1,5 @@
 #include "testarea.h"
+#include <chrono>
 
 void TestArea::SetTextureMandelbrot(octdoc::hlp::ModelData::MaterialData::Texture& texture)
 {
@@ -70,11 +71,12 @@ void TestArea::OnStart(octdoc::gfx::Graphics& graphics)
 	//loader.CreateSphere(octdoc::mth::float3(), 0.75f, 20, 10, octdoc::gfx::ModelType::PTM);
 	//loader.CreateCube(octdoc::mth::float3(-1.0f), octdoc::mth::float3(2.0f), octdoc::gfx::ModelType::PTM);
 	//loader.CreateQuad(octdoc::mth::float2(-1.0f), octdoc::mth::float2(2.0f), octdoc::gfx::ModelType::PTM);
-	loader.ChangeModelType(octdoc::gfx::ModelType::PTM);
+	//loader.ChangeModelType(octdoc::gfx::ModelType::PTM);
 
 	//SetTextureMandelbrot(loader.getTexture(0));
-	SetTextureToFile(loader.getTexture(0), L"Media/test.png");
-	SetTextureToFile(loader.getNormalmap(0), L"Media/normalmap.png");
+	//SetTextureToFile(loader.getTexture(0), L"Media/test.png");
+	//SetTextureToFile(loader.getNormalmap(0), L"Media/normalmap.png");
+	SetTextureToFile(loader.getTexture(0), L"Media/hinae.gif");
 
 	m_entity = octdoc::gfx::Entity::CreateP(graphics, loader);
 	loader.CreateCube(octdoc::mth::float3(-1.0f), octdoc::mth::float3(2.0f), octdoc::gfx::ModelType::PTN);
@@ -84,6 +86,16 @@ void TestArea::OnStart(octdoc::gfx::Graphics& graphics)
 	m_camera.position.z = -5.0f;
 	m_sampler = octdoc::gfx::SamplerState::CreateP(graphics, true, true);
 	m_sampler->SetToPixelShader(graphics);
+	graphics.EnableAlphaBlending(false);
+
+	/*unsigned uselessWidthCounter = 0;
+	auto startTime = std::chrono::steady_clock::now();
+	for (int i = 0; i < 1000; i++)
+		uselessWidthCounter += octdoc::gfx::Texture::CreateU(graphics, L"F:/Images/5bb16e3e8028ebac00297bc7477c120d.jpg")->getWidth();
+	graphics.SetWindowTitle(std::to_wstring(std::chrono::duration<float>(std::chrono::steady_clock::now() - startTime).count()).c_str());
+	m_entity->LookUp(float(uselessWidthCounter));*/
+	//SDK -> 38.47s for 1000
+	//WIC -> 27.32s for 1000
 }
 
 void TestArea::OnKeyDown(octdoc::gfx::KeyEvent& e)
@@ -106,9 +118,13 @@ void TestArea::OnMouseMove(octdoc::gfx::MouseMoveEvent& e)
 
 void TestArea::OnUpdate(octdoc::gfx::Graphics& graphics, float deltaTime)
 {
+	octdoc::mth::float4x4 cameraBuffer;
 	m_cameraController.Update(deltaTime);
 	m_camera.Update();
+	cameraBuffer = m_camera.GetCameraMatrix();
+	m_cameraBuffer->WriteBuffer(graphics, &cameraBuffer);
 	m_cameraBuffer->SetToVertexShader(graphics, 0);
+
 	float lightBuffer[] = {
 		1.0f, 1.0f, 1.0f, 1.0f,
 		m_camera.position.x, m_camera.position.y, m_camera.position.z,
@@ -117,19 +133,7 @@ void TestArea::OnUpdate(octdoc::gfx::Graphics& graphics, float deltaTime)
 	m_lightBuffer->WriteBuffer(graphics, lightBuffer);
 	m_lightBuffer->SetToPixelShader(graphics, 0);
 
-	octdoc::mth::float4x4 cameraBuffer;
-	m_tvScreen->SetAsRenderTarget(graphics);
-	m_tvScreen->ClearRenderTarget(graphics, 0.25f, 0.25f, 0.125f);
-	m_camera.SetScreenAspect(1.0f);
-	cameraBuffer = m_camera.GetCameraMatrix();
-	m_cameraBuffer->WriteBuffer(graphics, &cameraBuffer);
 	graphics.ClearRenderTarget(0.75f, 0.75f, 0.875f);
 	m_entity->Render(graphics);
-	graphics.SetScreenAsRenderTarget();
-	m_camera.SetScreenAspect(16.0f / 9.0f);
-	cameraBuffer = m_camera.GetCameraMatrix();
-	m_cameraBuffer->WriteBuffer(graphics, &cameraBuffer);
-	graphics.ClearRenderTarget(0.75f, 0.75f, 0.875f);
-	m_tv->Render(graphics);
 	graphics.Present();
 }

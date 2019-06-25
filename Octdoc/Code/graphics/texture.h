@@ -17,10 +17,10 @@ namespace octdoc
 
 		public:
 			Texture();
-			static Texture::P CreateP(Graphics& graphics, void* data, int width, int height);
-			static Texture::U CreateU(Graphics& graphics, void* data, int width, int height);
-			static Texture::P CreateP(Graphics& graphics, const wchar_t* filename);
-			static Texture::U CreateU(Graphics& graphics, const wchar_t* filename);
+			static Texture::P CreateP(Graphics& graphics, void* data, unsigned width, unsigned height, unsigned mipLevels = 0);
+			static Texture::U CreateU(Graphics& graphics, void* data, unsigned width, unsigned height, unsigned mipLevels = 0);
+			static Texture::P CreateP(Graphics& graphics, const wchar_t* filename, unsigned mipLevels = 0);
+			static Texture::U CreateU(Graphics& graphics, const wchar_t* filename, unsigned mipLevels = 0);
 
 			virtual void SetToRender(Graphics& graphics, unsigned index = 0) = 0;
 

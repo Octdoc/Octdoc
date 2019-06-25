@@ -31,6 +31,8 @@ namespace octdoc
 				COM_Ptr<ID3D11DepthStencilView> m_depthStencilView;
 				COM_Ptr<ID3D11RasterizerState> m_rasterizerWireframe;
 				COM_Ptr<ID3D11RasterizerState> m_rasterizerSolid;
+				COM_Ptr<ID3D11BlendState> m_blendState_alphaOn;
+				COM_Ptr<ID3D11BlendState> m_blendState_alphaOff;
 				D3D11_VIEWPORT m_viewPort;
 
 			private:
@@ -40,6 +42,7 @@ namespace octdoc
 				void CreateRenderTarget();
 				void SetViewPort();
 				void CreateRasterizerStates();
+				void CreateBlendStates();
 
 			public:
 				void Init(GraphicsSettings& settings);
@@ -55,7 +58,7 @@ namespace octdoc
 				virtual void ClearRenderTarget(float *color) override;
 				virtual void Present() override;
 
-				//virtual void EnableAlphaBlending(bool alpha) override;
+				virtual void EnableAlphaBlending(bool blend) override;
 				//virtual void EnableZBuffer(bool enable) override;
 				virtual void SetPrimitiveTopology_Points() override;
 				virtual void SetPrimitiveTopology_Lines() override;

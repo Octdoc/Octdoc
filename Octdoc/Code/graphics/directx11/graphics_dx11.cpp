@@ -32,6 +32,7 @@ namespace octdoc
 				CreateRenderTarget();
 				SetViewPort();
 				CreateRasterizerStates();
+				CreateBlendStates();
 			}
 			void Graphics_DX11::CreateGraphicsWindow()
 			{
@@ -199,6 +200,32 @@ namespace octdoc
 
 				m_context->RSSetState(m_rasterizerSolid);
 			}
+
+			void Graphics_DX11::CreateBlendStates()
+			{
+				HRESULT result;
+				D3D11_BLEND_DESC blendDesc{};
+				blendDesc.RenderTarget[0].BlendEnable = false;
+				blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+				blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+				blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+				blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+				blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+				blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+				blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
+
+				blendDesc.RenderTarget[0].BlendEnable = true;
+				result = m_device->CreateBlendState(&blendDesc, &m_blendState_alphaOn);
+				if (FAILED(result))
+					throw std::exception("Failed to create blend state");
+
+				blendDesc.RenderTarget[0].BlendEnable = false;
+				result = m_device->CreateBlendState(&blendDesc, &m_blendState_alphaOff);
+				if (FAILED(result))
+					throw std::exception("Failed to create blend state");
+
+				EnableAlphaBlending(true);
+			}
 			
 			LRESULT Graphics_DX11::MessageHandler(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 			{
@@ -211,7 +238,7 @@ namespace octdoc
 					MSG msg{};
 					if (m_startFunction)
 						m_startFunction(*this);
-					decltype(std::chrono::steady_clock::now()) prevTime = std::chrono::steady_clock::now();
+					auto prevTime = std::chrono::steady_clock::now();
 					while (msg.message != WM_QUIT)
 					{
 						if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -223,7 +250,7 @@ namespace octdoc
 						{
 							if (m_updateFunction)
 							{
-								decltype(prevTime) currentTime = std::chrono::steady_clock::now();
+								auto currentTime = std::chrono::steady_clock::now();
 								m_updateFunction(*this, std::chrono::duration<float>(currentTime - prevTime).count());
 								prevTime = currentTime;
 							}
@@ -270,6 +297,11 @@ namespace octdoc
 			void Graphics_DX11::Present()
 			{
 				m_swapChain->Present(m_settings.vsyncEnable ? 1 : 0, 0);
+			}
+			void Graphics_DX11::EnableAlphaBlending(bool blend)
+			{
+				float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+				m_context->OMSetBlendState(blend ? m_blendState_alphaOn : m_blendState_alphaOff, blendFactor, 0xffffffff);
 			}
 			void Graphics_DX11::SetPrimitiveTopology_Points()
 			{
