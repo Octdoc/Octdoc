@@ -77,8 +77,10 @@ void TestArea::OnStart(octdoc::gfx::Graphics& graphics)
 	SetTextureToFile(loader.getNormalmap(0), L"Media/normalmap.png");
 
 	m_entity = octdoc::gfx::Entity::CreateP(graphics, loader);
+	loader.CreateCube(octdoc::mth::float3(-1.0f), octdoc::mth::float3(2.0f), octdoc::gfx::ModelType::PTN);
 	m_tv = octdoc::gfx::Entity::CreateP(graphics, loader);
 	m_tvScreen = octdoc::gfx::RenderTargetTexture::CreateP(graphics, 512, 512);
+	auto tmptex = octdoc::gfx::Texture::CreateP(graphics, L"Media/test.png");
 	m_tv->getMaterial(0)->setTexture(m_tvScreen);
 	m_camera.position.z = -5.0f;
 	m_sampler = octdoc::gfx::SamplerState::CreateP(graphics, true, true);
@@ -107,8 +109,6 @@ void TestArea::OnUpdate(octdoc::gfx::Graphics& graphics, float deltaTime)
 {
 	m_cameraController.Update(deltaTime);
 	m_camera.Update();
-	octdoc::mth::float4x4 cameraBuffer = m_camera.GetCameraMatrix();
-	m_cameraBuffer->WriteBuffer(graphics, &cameraBuffer);
 	m_cameraBuffer->SetToVertexShader(graphics, 0);
 	float lightBuffer[] = {
 		1.0f, 1.0f, 1.0f, 1.0f,
@@ -117,7 +117,20 @@ void TestArea::OnUpdate(octdoc::gfx::Graphics& graphics, float deltaTime)
 	};
 	m_lightBuffer->WriteBuffer(graphics, lightBuffer);
 	m_lightBuffer->SetToPixelShader(graphics, 0);
+
+	octdoc::mth::float4x4 cameraBuffer;
+	m_tvScreen->SetAsRenderTarget(graphics);
+	m_tvScreen->ClearRenderTarget(graphics, 0.25f, 0.25f, 0.125f);
+	m_camera.SetScreenAspect(1.0f);
+	cameraBuffer = m_camera.GetCameraMatrix();
+	m_cameraBuffer->WriteBuffer(graphics, &cameraBuffer);
 	graphics.ClearRenderTarget(0.75f, 0.75f, 0.875f);
 	m_entity->Render(graphics);
+	graphics.SetScreenAsRenderTarget();
+	m_camera.SetScreenAspect(16.0f / 9.0f);
+	cameraBuffer = m_camera.GetCameraMatrix();
+	m_cameraBuffer->WriteBuffer(graphics, &cameraBuffer);
+	graphics.ClearRenderTarget(0.75f, 0.75f, 0.875f);
+	m_tv->Render(graphics);
 	graphics.Present();
 }

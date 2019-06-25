@@ -22,5 +22,15 @@ namespace octdoc
 			}
 			return nullptr;
 		}
+		void RenderTargetTexture::ClearRenderTarget(Graphics& graphics)
+		{
+			float clearColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+			ClearRenderTarget(graphics, clearColor);
+		}
+		void RenderTargetTexture::ClearRenderTarget(Graphics& graphics, float r, float g, float b, float a)
+		{
+			float clearColor[] = { r, g, b, a };
+			ClearRenderTarget(graphics, clearColor);
+		}
 	}
 }

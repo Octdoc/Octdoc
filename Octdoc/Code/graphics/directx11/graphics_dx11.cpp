@@ -17,6 +17,7 @@ namespace octdoc
 				{
 					SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)(((LPCREATESTRUCT)lparam)->lpCreateParams));
 					SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG_PTR)WndProc);
+					WndProc(hwnd, msg, wparam, lparam);
 					return 0;
 				}
 				return DefWindowProc(hwnd, msg, wparam, lparam);
