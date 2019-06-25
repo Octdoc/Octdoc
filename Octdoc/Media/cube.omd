@@ -1,0 +1,68 @@
+TOMD
+Model type: 39
+Vertex count: 24
+Index count: 36
+Group count: 1
+Material count: 1
+Bounding volume primitive: 0
+Hitbox triangle count: 0
+Bone count: 0
+Animation count: 0
+
+Vertices:
+-1 1 -1 1 0 -1 0 0 
+-1 -1 1 -0 1 -1 0 0 
+-1 -1 -1 1 1 -1 0 0 
+-1 1 1 1 0 0 0 1 
+1 -1 1 0 1 0 0 1 
+-1 -1 1 1 1 0 0 1 
+1 1 1 1 0 1 0 0 
+1 -1 -1 0 1 1 0 0 
+1 -1 1 1 1 1 0 0 
+1 1 -1 1 0 0 0 -1 
+-1 -1 -1 0 1 0 0 -1 
+1 -1 -1 1 1 0 0 -1 
+1 -1 1 1 1 0 -1 0 
+-1 -1 -1 0 0 0 -1 0 
+-1 -1 1 0 1 0 -1 0 
+-1 1 1 0 0 0 1 0 
+1 1 -1 1 1 0 1 0 
+1 1 1 1 0 0 1 0 
+-1 1 1 0 0 -1 0 0 
+1 1 1 0 0 0 0 1 
+1 1 -1 0 0 1 0 0 
+-1 1 -1 0 0 0 0 -1 
+1 -1 -1 1 0 0 -1 0 
+-1 1 -1 0 1 0 1 0 
+
+Indices:
+0 2 1
+3 5 4
+6 8 7
+9 11 10
+12 14 13
+15 17 16
+0 1 18
+3 4 19
+6 7 20
+9 10 21
+12 13 22
+15 16 23
+
+Groups:
+New group
+	Start index: 0
+	Index count: 36
+	Material index: 0
+
+Materials:
+New material
+	Texture name: test.png
+	Normalmap name: 
+
+Bounding volume:
+Hitbox:
+
+Bones:
+
+Animations:

@@ -1,0 +1,249 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\graphics">
+      <UniqueIdentifier>{de3d1784-3e12-4bea-a9ff-a98017400f56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\graphics\directx11">
+      <UniqueIdentifier>{ac977e49-7167-45a7-915c-1e4adfc5d01c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\graphics">
+      <UniqueIdentifier>{c8f92e68-1e55-45a5-9104-234f3895b957}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\graphics\directx11">
+      <UniqueIdentifier>{cc5cba88-cba1-4709-97d5-054502318630}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\helpers">
+      <UniqueIdentifier>{298f4f81-a397-476c-88e1-1b6efe0bd0dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\helpers">
+      <UniqueIdentifier>{da5b57d3-43c4-4ec6-a3c2-ce3132cab305}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\physics">
+      <UniqueIdentifier>{ad382a85-f9af-48b7-8698-65bf7fe2d3d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\physics">
+      <UniqueIdentifier>{2b3fca41-ad2b-4849-b7f1-3b9e03eb544a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Code\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\graphics\graphics.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\graphics\directx11\graphics_dx11.cpp">
+      <Filter>Source Files\graphics\directx11</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\graphics\directx11\input_dx11.cpp">
+      <Filter>Source Files\graphics\directx11</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\graphics\modeltype.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\graphics\input.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\graphics\model.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\graphics\application.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\graphics\directx11\model_dx11.cpp">
+      <Filter>Source Files\graphics\directx11</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\graphics\material.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\graphics\directx11\shaderbase_dx11.cpp">
+      <Filter>Source Files\graphics\directx11</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\graphics\vertexshader.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\graphics\directx11\shaderbuffer_dx11.cpp">
+      <Filter>Source Files\graphics\directx11</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\graphics\pixelshader.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\graphics\directx11\pixelshader_dx11.cpp">
+      <Filter>Source Files\graphics\directx11</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\graphics\shaderbuffer.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\graphics\directx11\vertexshader_dx11.cpp">
+      <Filter>Source Files\graphics\directx11</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\graphics\directx11\texture_dx11.cpp">
+      <Filter>Source Files\graphics\directx11</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\graphics\directx11\samplerstate_dx11.cpp">
+      <Filter>Source Files\graphics\directx11</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\graphics\samplerstate.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\graphics\materialtype.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\graphics\entity.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\graphics\camera.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\graphics\texture.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\testarea.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\graphics\rendertargettexture.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\graphics\directx11\rendertargettexture_dx11.cpp">
+      <Filter>Source Files\graphics\directx11</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\helpers\fileloaders.cpp">
+      <Filter>Source Files\helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\physics\boundingvolume.cpp">
+      <Filter>Source Files\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\helpers\helpers.cpp">
+      <Filter>Source Files\helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\physics\collider.cpp">
+      <Filter>Source Files\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\helpers\modelloader.cpp">
+      <Filter>Source Files\helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\helpers\firstpersoncontroller.cpp">
+      <Filter>Source Files\helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\helpers\omdloader.cpp">
+      <Filter>Source Files\helpers</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Code\graphics\directx11\graphics_dx11.h">
+      <Filter>Header Files\graphics\directx11</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\graphics.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\directx11\comptr.h">
+      <Filter>Header Files\graphics\directx11</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\input.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\directx11\input_dx11.h">
+      <Filter>Header Files\graphics\directx11</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\model.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\modeltype.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\helpers\helpers.h">
+      <Filter>Header Files\helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\directx11\model_dx11.h">
+      <Filter>Header Files\graphics\directx11</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\application.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\material.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\directx11\shaderbuffer_dx11.h">
+      <Filter>Header Files\graphics\directx11</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\directx11\pixelshader_dx11.h">
+      <Filter>Header Files\graphics\directx11</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\directx11\texture_dx11.h">
+      <Filter>Header Files\graphics\directx11</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\directx11\vertexshader_dx11.h">
+      <Filter>Header Files\graphics\directx11</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\directx11\shaderbase_dx11.h">
+      <Filter>Header Files\graphics\directx11</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\vertexshader.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\pixelshader.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\shaderbuffer.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\texture.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\samplerstate.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\directx11\samplerstate_dx11.h">
+      <Filter>Header Files\graphics\directx11</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\materialtype.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\camera.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\entity.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\testarea.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\rendertargettexture.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\directx11\rendertargettexture_dx11.h">
+      <Filter>Header Files\graphics\directx11</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\helpers\fileloaders.h">
+      <Filter>Header Files\helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\physics\boundingvolume.h">
+      <Filter>Header Files\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\physics\collider.h">
+      <Filter>Header Files\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\helpers\modelloader.h">
+      <Filter>Header Files\helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\helpers\firstpersoncontroller.h">
+      <Filter>Header Files\helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\helpers\omdloader.h">
+      <Filter>Header Files\helpers</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
