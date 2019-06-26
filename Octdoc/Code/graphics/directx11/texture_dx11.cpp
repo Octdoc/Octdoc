@@ -20,7 +20,7 @@ namespace octdoc
 					}
 				}
 			}
-			void Texture_DX11::CreateTexture(Graphics_DX11& graphics, void* data, unsigned mipLevels, COM_Ptr<ID3D11ShaderResourceView>& shaderResourceView)
+			COM_Ptr<ID3D11ShaderResourceView> Texture_DX11::CreateTexture(Graphics_DX11& graphics, void* data, unsigned mipLevels)
 			{
 				D3D11_SUBRESOURCE_DATA imgData{};
 				imgData.pSysMem = data;
@@ -30,10 +30,11 @@ namespace octdoc
 				imageCreator.imageData.push_back(imgData);
 				imageCreator.mipLevels = mipLevels;
 				imageCreator.generateMips = mipLevels != 1;
-				CreateTexture(graphics, imageCreator, shaderResourceView);
+				return CreateTexture(graphics, imageCreator);
 			}
-			void Texture_DX11::CreateTexture(Graphics_DX11& graphics, ImageCreatorStruct& imageCreator, COM_Ptr<ID3D11ShaderResourceView>& shaderResourceView)
+			COM_Ptr<ID3D11ShaderResourceView> Texture_DX11::CreateTexture(Graphics_DX11& graphics, ImageCreatorStruct& imageCreator)
 			{
+				COM_Ptr<ID3D11ShaderResourceView> shaderResourceView;
 				ID3D11Device* device = graphics.getDevice();
 				ID3D11DeviceContext* context = graphics.getContext();
 				HRESULT hr;
@@ -77,6 +78,8 @@ namespace octdoc
 					throw std::exception("Failed to create shader resource view");
 				if (imageCreator.generateMips)
 					context->GenerateMips(shaderResourceView);
+
+				return shaderResourceView;
 			}
 			void Texture_DX11::LoadTexture(Graphics_DX11& graphics, const wchar_t* filename, unsigned mipLevels)
 			{
@@ -91,7 +94,7 @@ namespace octdoc
 				std::vector<unsigned char> pixels;
 				hlp::LoadTargaFromFile(filename, pixels, m_width, m_height);
 				m_frames.push_back(Frame());
-				CreateTexture(graphics, pixels.data(), mipLevels, m_frames[0].shaderResourceView);
+				m_frames[0].shaderResourceView = CreateTexture(graphics, pixels.data(), mipLevels);
 			}
 			void Texture_DX11::LoadWithWIC(Graphics_DX11& graphics, const wchar_t* filename, unsigned mipLevels)
 			{
@@ -105,10 +108,10 @@ namespace octdoc
 					if (loader.hasMips())
 					{
 						ImageCreatorStruct imageCreator = loader.ReadyDataForMipmapTextureCreation();
-						CreateTexture(graphics, imageCreator, m_frames[i].shaderResourceView);
+						m_frames[i].shaderResourceView = CreateTexture(graphics, imageCreator);
 					}
 					else
-						CreateTexture(graphics, loader.getFrame(i).frame.data(), mipLevels, m_frames[i].shaderResourceView);
+						m_frames[i].shaderResourceView = CreateTexture(graphics, loader.getFrame(i).frame.data(), mipLevels);
 					m_frames[i].frameTime = loader.getFrame(i).time;
 				}
 				m_prevTime = std::chrono::steady_clock::now();
@@ -125,7 +128,7 @@ namespace octdoc
 				m_width = width;
 				m_height = height;
 				m_frames.push_back(Frame());
-				CreateTexture(graphics, data, mipLevels, m_frames[0].shaderResourceView);
+				m_frames[0].shaderResourceView = CreateTexture(graphics, data, mipLevels);
 			}
 			Texture_DX11::Texture_DX11(Graphics_DX11& graphics, const wchar_t* filename, unsigned mipLevels)
 			{

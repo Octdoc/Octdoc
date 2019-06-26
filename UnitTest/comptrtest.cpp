@@ -30,6 +30,14 @@ namespace UnitTest
 		}
 	};
 
+	COM_Ptr<Speciman> CreateSpeciman(Speciman* s)
+	{
+		COM_Ptr<Speciman> p;
+		Speciman** sp = p.getAddress();
+		*sp = s;
+		return p;
+	}
+
 	TEST_CLASS(COMPtr_Test)
 	{
 	public:
@@ -54,6 +62,13 @@ namespace UnitTest
 
 			Assert::IsTrue(p1.get() == p2.get());
 			Assert::IsTrue(s.counter == 2);
+		}
+		TEST_METHOD(MoveCTorTest)
+		{
+			Speciman s;
+			COM_Ptr<Speciman> p1 = CreateSpeciman(&s);
+
+			Assert::IsTrue(s.counter == 1);
 		}
 		TEST_METHOD(DTorTest)
 		{

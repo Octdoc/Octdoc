@@ -34,8 +34,8 @@ namespace octdoc
 				float m_frameTimeLeft;	//how much time till the next frame comes
 								
 			private:
-				void CreateTexture(Graphics_DX11& graphics, void* data, unsigned mipLevels, COM_Ptr<ID3D11ShaderResourceView>& shaderResourceView);
-				void CreateTexture(Graphics_DX11& graphics, ImageCreatorStruct& imageCreator, COM_Ptr<ID3D11ShaderResourceView>& shaderResourceView);
+				COM_Ptr<ID3D11ShaderResourceView> CreateTexture(Graphics_DX11& graphics, void* data, unsigned mipLevels);
+				COM_Ptr<ID3D11ShaderResourceView> CreateTexture(Graphics_DX11& graphics, ImageCreatorStruct& imageCreator);
 				void LoadTexture(Graphics_DX11& graphics, const wchar_t* filename, unsigned mipLevels);
 				void LoadTarga(Graphics_DX11& graphics, const wchar_t* filename, unsigned mipLevels);
 				void LoadWithWIC(Graphics_DX11& graphics, const wchar_t* filename, unsigned mipLevels);

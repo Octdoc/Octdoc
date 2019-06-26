@@ -76,8 +76,8 @@ void TestArea::OnStart(octdoc::gfx::Graphics& graphics)
 	//SetTextureMandelbrot(loader.getTexture(0));
 	//SetTextureToFile(loader.getTexture(0), L"Media/test.png");
 	//SetTextureToFile(loader.getNormalmap(0), L"Media/normalmap.png");
-	//SetTextureToFile(loader.getTexture(0), L"Media/hinae.gif");
-	SetTextureToFile(loader.getTexture(0), L"Media/tex.dds");
+	SetTextureToFile(loader.getTexture(0), L"Media/hinae.gif");
+	//SetTextureToFile(loader.getTexture(0), L"Media/tex.dds");
 
 	m_entity = octdoc::gfx::Entity::CreateP(graphics, loader);
 	loader.CreateCube(octdoc::mth::float3(-1.0f), octdoc::mth::float3(2.0f), octdoc::gfx::ModelType::PTN);

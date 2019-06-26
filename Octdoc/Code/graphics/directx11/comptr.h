@@ -13,11 +13,15 @@ namespace octdoc
 
 			public:
 				COM_Ptr() :m_ptr(nullptr) {}
-				COM_Ptr(T *ptr) :m_ptr(ptr) {}
+				COM_Ptr(T* ptr) :m_ptr(ptr) {}
 				COM_Ptr(const COM_Ptr& ptr) :m_ptr(ptr.m_ptr)
 				{
 					if (m_ptr)
 						m_ptr->AddRef();
+				}
+				COM_Ptr(COM_Ptr&& ptr) :m_ptr(ptr.m_ptr)
+				{
+					ptr.m_ptr = nullptr;
 				}
 				~COM_Ptr() { Release(); }
 				void Release()
@@ -30,11 +34,11 @@ namespace octdoc
 				}
 				T* Unbind()
 				{
-					T *ptr = m_ptr;
+					T* ptr = m_ptr;
 					m_ptr = nullptr;
 					return ptr;
 				}
-				operator T*() { return m_ptr; }
+				operator T* () { return m_ptr; }
 				T** operator&() { return &m_ptr; }
 				T* operator->() { return m_ptr; }
 				T* get() { return m_ptr; }
@@ -42,14 +46,14 @@ namespace octdoc
 				template<typename CAST_TYPE>
 				CAST_TYPE* As() { return (CAST_TYPE*)m_ptr; }
 				template<typename CAST_TYPE>
-				CAST_TYPE** AddressAs() { return (CAST_TYPE**)&m_ptr; }
-				bool operator==(T* ptr) { return m_ptr == ptr; }
-				bool operator!=(T* ptr) { return m_ptr != ptr; }
-				bool operator==(COM_Ptr<T>& ptr) { return m_ptr == ptr.m_ptr; }
-				bool operator!=(COM_Ptr<T>& ptr) { return m_ptr != ptr.m_ptr; }
-				operator bool() { return m_ptr != nullptr; }
-				bool operator!() { return m_ptr == nullptr; }
-				COM_Ptr<T>& operator=(T* ptr) 
+				CAST_TYPE** AddressAs() { return (CAST_TYPE * *)& m_ptr; }
+				bool operator==(T* ptr) const { return m_ptr == ptr; }
+				bool operator!=(T* ptr) const { return m_ptr != ptr; }
+				bool operator==(const COM_Ptr<T>& ptr) const { return m_ptr == ptr.m_ptr; }
+				bool operator!=(const COM_Ptr<T>& ptr) const { return m_ptr != ptr.m_ptr; }
+				operator bool() const { return m_ptr != nullptr; }
+				bool operator!() const { return m_ptr == nullptr; }
+				COM_Ptr<T>& operator=(T* ptr)
 				{
 					if (m_ptr != ptr)
 					{
@@ -58,7 +62,7 @@ namespace octdoc
 					}
 					return *this;
 				}
-				COM_Ptr<T>& operator=(COM_Ptr<T>& ptr)
+				COM_Ptr<T>& operator=(COM_Ptr<T> ptr)
 				{
 					if (m_ptr != ptr.m_ptr)
 					{
