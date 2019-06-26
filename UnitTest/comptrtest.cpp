@@ -155,6 +155,8 @@ namespace UnitTest
 			Assert::IsFalse(p1 != p3);
 			Assert::IsFalse(p4);
 			Assert::IsTrue(p1);
+			Assert::IsTrue(!p4);
+			Assert::IsFalse(!p1);
 		}
 		TEST_METHOD(ValueAssignTest)
 		{

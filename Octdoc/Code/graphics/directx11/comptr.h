@@ -48,6 +48,7 @@ namespace octdoc
 				bool operator==(COM_Ptr<T>& ptr) { return m_ptr == ptr.m_ptr; }
 				bool operator!=(COM_Ptr<T>& ptr) { return m_ptr != ptr.m_ptr; }
 				operator bool() { return m_ptr != nullptr; }
+				bool operator!() { return m_ptr == nullptr; }
 				COM_Ptr<T>& operator=(T* ptr) 
 				{
 					if (m_ptr != ptr)

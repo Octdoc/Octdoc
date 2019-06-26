@@ -101,7 +101,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>$(SolutionDir)..\OctdocMath\Bin\$(Platform)\$(Configuration)\OctdocMath;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>OctdocMath.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
@@ -121,7 +121,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>$(SolutionDir)..\OctdocMath\Bin\$(Platform)\$(Configuration)\OctdocMath;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>OctdocMath.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
@@ -145,7 +145,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>$(SolutionDir)..\OctdocMath\Bin\$(Platform)\$(Configuration)\OctdocMath;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>OctdocMath.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
@@ -169,7 +169,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>$(SolutionDir)..\OctdocMath\Bin\$(Platform)\$(Configuration)\OctdocMath;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>OctdocMath.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
@@ -191,6 +191,7 @@
     <ClCompile Include="Code\graphics\directx11\shaderbuffer_dx11.cpp" />
     <ClCompile Include="Code\graphics\directx11\texture_dx11.cpp" />
     <ClCompile Include="Code\graphics\directx11\vertexshader_dx11.cpp" />
+    <ClCompile Include="Code\graphics\directx11\wicimageloader.cpp" />
     <ClCompile Include="Code\graphics\entity.cpp" />
     <ClCompile Include="Code\graphics\graphics.cpp" />
     <ClCompile Include="Code\graphics\input.cpp" />
@@ -228,6 +229,7 @@
     <ClInclude Include="Code\graphics\directx11\shaderbase_dx11.h" />
     <ClInclude Include="Code\graphics\directx11\texture_dx11.h" />
     <ClInclude Include="Code\graphics\directx11\vertexshader_dx11.h" />
+    <ClInclude Include="Code\graphics\directx11\wicimageloader.h" />
     <ClInclude Include="Code\graphics\entity.h" />
     <ClInclude Include="Code\graphics\graphics.h" />
     <ClInclude Include="Code\graphics\input.h" />

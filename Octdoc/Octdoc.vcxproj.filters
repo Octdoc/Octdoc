@@ -141,6 +141,9 @@
     <ClCompile Include="Code\helpers\omdloader.cpp">
       <Filter>Source Files\helpers</Filter>
     </ClCompile>
+    <ClCompile Include="Code\graphics\directx11\wicimageloader.cpp">
+      <Filter>Source Files\graphics\directx11</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\graphics\directx11\graphics_dx11.h">
@@ -244,6 +247,9 @@
     </ClInclude>
     <ClInclude Include="Code\helpers\omdloader.h">
       <Filter>Header Files\helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\directx11\wicimageloader.h">
+      <Filter>Header Files\graphics\directx11</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

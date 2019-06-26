@@ -76,7 +76,8 @@ void TestArea::OnStart(octdoc::gfx::Graphics& graphics)
 	//SetTextureMandelbrot(loader.getTexture(0));
 	//SetTextureToFile(loader.getTexture(0), L"Media/test.png");
 	//SetTextureToFile(loader.getNormalmap(0), L"Media/normalmap.png");
-	SetTextureToFile(loader.getTexture(0), L"Media/hinae.gif");
+	//SetTextureToFile(loader.getTexture(0), L"Media/hinae.gif");
+	SetTextureToFile(loader.getTexture(0), L"Media/tex.dds");
 
 	m_entity = octdoc::gfx::Entity::CreateP(graphics, loader);
 	loader.CreateCube(octdoc::mth::float3(-1.0f), octdoc::mth::float3(2.0f), octdoc::gfx::ModelType::PTN);
@@ -87,15 +88,6 @@ void TestArea::OnStart(octdoc::gfx::Graphics& graphics)
 	m_sampler = octdoc::gfx::SamplerState::CreateP(graphics, true, true);
 	m_sampler->SetToPixelShader(graphics);
 	graphics.EnableAlphaBlending(false);
-
-	/*unsigned uselessWidthCounter = 0;
-	auto startTime = std::chrono::steady_clock::now();
-	for (int i = 0; i < 1000; i++)
-		uselessWidthCounter += octdoc::gfx::Texture::CreateU(graphics, L"F:/Images/5bb16e3e8028ebac00297bc7477c120d.jpg")->getWidth();
-	graphics.SetWindowTitle(std::to_wstring(std::chrono::duration<float>(std::chrono::steady_clock::now() - startTime).count()).c_str());
-	m_entity->LookUp(float(uselessWidthCounter));*/
-	//SDK -> 38.47s for 1000
-	//WIC -> 27.32s for 1000
 }
 
 void TestArea::OnKeyDown(octdoc::gfx::KeyEvent& e)

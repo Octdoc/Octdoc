@@ -329,7 +329,20 @@ int LinePointDistanceTest()
 	return 0;
 }
 
+class Class
+{
+	static int c;
+public:
+	Class()
+	{
+		std::cout << c++ << std::endl;
+	}
+};
+int Class::c = 0;
 int main()
 {
+	std::vector<Class> cs;
+	cs.resize(5);
+	std::cin.get();
 	return OMDLoadingTest();
 }

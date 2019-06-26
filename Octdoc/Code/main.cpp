@@ -1,8 +1,8 @@
 #include "testarea.h"
 #include <Windows.h>
 
-//INT WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR, INT)
-int main()
+INT WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR, INT)
+//int main()
 {
 	octdoc::gfx::GraphicsSettings settings;
 	octdoc::gfx::Graphics::U graphics = octdoc::gfx::Graphics::CreateU(settings);
