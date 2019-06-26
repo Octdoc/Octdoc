@@ -27,26 +27,26 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -109,6 +109,9 @@
       <ShaderModel>5.0</ShaderModel>
       <ObjectFileOutput>$(ProjectDir)Shaders/%(Filename).cso</ObjectFileOutput>
     </FxCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\OctdocMath\Bin\$(Platform)\$(Configuration)\OctdocMath;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -129,6 +132,9 @@
       <ShaderModel>5.0</ShaderModel>
       <ObjectFileOutput>$(ProjectDir)Shaders/%(Filename).cso</ObjectFileOutput>
     </FxCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\OctdocMath\Bin\$(Platform)\$(Configuration)\OctdocMath;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -153,6 +159,9 @@
       <ShaderModel>5.0</ShaderModel>
       <ObjectFileOutput>$(ProjectDir)Shaders/%(Filename).cso</ObjectFileOutput>
     </FxCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\OctdocMath\Bin\$(Platform)\$(Configuration)\OctdocMath;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -177,6 +186,9 @@
       <ShaderModel>5.0</ShaderModel>
       <ObjectFileOutput>$(ProjectDir)Shaders/%(Filename).cso</ObjectFileOutput>
     </FxCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\OctdocMath\Bin\$(Platform)\$(Configuration)\OctdocMath;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Code\graphics\application.cpp" />
@@ -210,10 +222,8 @@
     <ClCompile Include="Code\helpers\helpers.cpp" />
     <ClCompile Include="Code\helpers\modelloader.cpp" />
     <ClCompile Include="Code\helpers\omdloader.cpp" />
-    <ClCompile Include="Code\main.cpp" />
     <ClCompile Include="Code\physics\boundingvolume.cpp" />
     <ClCompile Include="Code\physics\collider.cpp" />
-    <ClCompile Include="Code\testarea.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\graphics\application.h" />
@@ -250,7 +260,6 @@
     <ClInclude Include="Code\helpers\omdloader.h" />
     <ClInclude Include="Code\physics\boundingvolume.h" />
     <ClInclude Include="Code\physics\collider.h" />
-    <ClInclude Include="Code\testarea.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

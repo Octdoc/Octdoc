@@ -76,8 +76,9 @@ void TestArea::OnStart(octdoc::gfx::Graphics& graphics)
 	//SetTextureMandelbrot(loader.getTexture(0));
 	//SetTextureToFile(loader.getTexture(0), L"Media/test.png");
 	//SetTextureToFile(loader.getNormalmap(0), L"Media/normalmap.png");
-	SetTextureToFile(loader.getTexture(0), L"Media/hinae.gif");
-	//SetTextureToFile(loader.getTexture(0), L"Media/tex.dds");
+	SetTextureToFile(loader.getTexture(0), L"Media/Arimura_Hinae.gif");
+	//SetTextureToFile(loader.getTexture(0), L"Media/Shimada_Alice.gif");
+	//SetTextureToFile(loader.getTexture(0), L"Media/mipmaptest.dds");
 
 	m_entity = octdoc::gfx::Entity::CreateP(graphics, loader);
 	loader.CreateCube(octdoc::mth::float3(-1.0f), octdoc::mth::float3(2.0f), octdoc::gfx::ModelType::PTN);
@@ -87,7 +88,7 @@ void TestArea::OnStart(octdoc::gfx::Graphics& graphics)
 	m_camera.position.z = -5.0f;
 	m_sampler = octdoc::gfx::SamplerState::CreateP(graphics, true, true);
 	m_sampler->SetToPixelShader(graphics);
-	graphics.EnableAlphaBlending(false);
+	//graphics.EnableAlphaBlending(false);
 }
 
 void TestArea::OnKeyDown(octdoc::gfx::KeyEvent& e)

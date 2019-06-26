@@ -39,9 +39,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Code\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Code\graphics\graphics.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
@@ -110,9 +107,6 @@
     </ClCompile>
     <ClCompile Include="Code\graphics\texture.cpp">
       <Filter>Source Files\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\testarea.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Code\graphics\rendertargettexture.cpp">
       <Filter>Source Files\graphics</Filter>
@@ -220,9 +214,6 @@
     </ClInclude>
     <ClInclude Include="Code\graphics\entity.h">
       <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\testarea.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Code\graphics\rendertargettexture.h">
       <Filter>Header Files\graphics</Filter>
