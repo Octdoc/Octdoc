@@ -6,7 +6,7 @@ namespace octdoc
 {
 	namespace gfx
 	{
-		class Camera :public mth::Position
+		class Camera :public mth::Position<float>
 		{
 			mth::float4x4 m_viewMatrix;
 			mth::float4x4 m_projectionMatrix;

@@ -7,8 +7,8 @@ namespace octdoc
 {
 	namespace physx
 	{
-		bool Intersects_PointCuboid(mth::float3 p1, mth::float3 p2min, mth::float3 p2max);
-		bool Intersects_PointSphere(mth::float3 p1, mth::float3 p2, float r);
+		bool Intersects_PointCuboid(mth::double3 p1, mth::double3 p2min, mth::double3 p2max);
+		bool Intersects_PointSphere(mth::double3 p1, mth::double3 p2, double r);
 
 		class BV_Cuboid;
 		class BV_Sphere;
@@ -34,16 +34,16 @@ namespace octdoc
 		{
 			SMART_PTR(BV_Cuboid)
 		public:
-			mth::float3 position;
-			mth::float3 size;
+			mth::double3 position;
+			mth::double3 size;
 
 		public:
 			BV_Cuboid();
-			BV_Cuboid(mth::float3 position, mth::float3 size);
+			BV_Cuboid(mth::double3 position, mth::double3 size);
 			static BV_Cuboid::U CreateU();
-			static BV_Cuboid::U CreateU(mth::float3 position, mth::float3 size);
+			static BV_Cuboid::U CreateU(mth::double3 position, mth::double3 size);
 			static BV_Cuboid::P CreateP();
-			static BV_Cuboid::P CreateP(mth::float3 position, mth::float3 size);
+			static BV_Cuboid::P CreateP(mth::double3 position, mth::double3 size);
 			virtual bool Intersects(BoundingVolume& other) override;
 			virtual bool Intersects(BV_Cuboid& other) override;
 			virtual bool Intersects(BV_Sphere& other) override;
@@ -53,16 +53,16 @@ namespace octdoc
 		{
 			SMART_PTR(BV_Sphere)
 		public:
-			mth::float3 position;
-			float radius;
+			mth::double3 position;
+			double radius;
 
 		public:
 			BV_Sphere();
-			BV_Sphere(mth::float3 position, float radius);
+			BV_Sphere(mth::double3 position, double radius);
 			static BV_Sphere::U CreateU();
-			static BV_Sphere::U CreateU(mth::float3 position, float radius);
+			static BV_Sphere::U CreateU(mth::double3 position, double radius);
 			static BV_Sphere::P CreateP();
-			static BV_Sphere::P CreateP(mth::float3 position, float radius);
+			static BV_Sphere::P CreateP(mth::double3 position, double radius);
 			virtual bool Intersects(BoundingVolume& other) override;
 			virtual bool Intersects(BV_Cuboid& other) override;
 			virtual bool Intersects(BV_Sphere& other) override;

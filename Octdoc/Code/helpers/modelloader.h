@@ -46,10 +46,10 @@ namespace octdoc
 			std::vector<MaterialData> materials;
 
 			unsigned boundingVolumeType;
-			mth::float3 bvPosition;
-			mth::float3 bvCuboidSize;
+			mth::double3 bvPosition;
+			mth::double3 bvCuboidSize;
 			float bvSphereRadius;
-			std::vector<mth::float3> hitboxVertices;
+			std::vector<mth::double3> hitboxVertices;
 			std::vector<unsigned> hitboxIndices;
 			inline bool isHitboxIndexed() { return hitboxIndices.size() != 0; }
 
@@ -114,10 +114,10 @@ namespace octdoc
 			inline unsigned getMaterialType(unsigned index) { return m_data.materials[index].materialType; }
 
 			inline unsigned getBoundingVolumePrimitive() { return m_data.boundingVolumeType; }
-			inline mth::float3 getBoundingVolumePosition() { return m_data.bvPosition; }
-			inline mth::float3 getBoundingVolumeCubiodSize() { return m_data.bvCuboidSize; }
+			inline mth::double3 getBoundingVolumePosition() { return m_data.bvPosition; }
+			inline mth::double3 getBoundingVolumeCubiodSize() { return m_data.bvCuboidSize; }
 			inline float getBoundingVolumeSphereRadius() { return m_data.bvSphereRadius; }
-			inline std::vector<mth::float3>& getHitboxMesh() { return m_data.hitboxVertices; }
+			inline std::vector<mth::double3>& getHitboxVertices() { return m_data.hitboxVertices; }
 			inline std::vector<unsigned>& getHitboxIndices() { return m_data.hitboxIndices; }
 			inline bool isHitboxIndexed() { return m_data.isHitboxIndexed(); }
 		};

@@ -4,14 +4,14 @@ namespace octdoc
 {
 	namespace physx
 	{
-		bool Intersects_PointCuboid(mth::float3 p1, mth::float3 p2min, mth::float3 p2max)
+		bool Intersects_PointCuboid(mth::double3 p1, mth::double3 p2min, mth::double3 p2max)
 		{
 			return
 				p2min.x < p1.x && p1.x < p2max.x &&
 				p2min.y < p1.y && p1.y < p2max.y &&
 				p2min.z < p1.z && p1.z < p2max.z;
 		}
-		bool Intersects_PointSphere(mth::float3 p1, mth::float3 p2, float r)
+		bool Intersects_PointSphere(mth::double3 p1, mth::double3 p2, double r)
 		{
 			return (p1 - p2).LengthSquare() < r*r;
 		}
@@ -22,7 +22,7 @@ namespace octdoc
 		}
 		bool Intersects_CuboidSphere(BV_Cuboid& h1, BV_Sphere& h2)
 		{
-			mth::float3 point;
+			mth::double3 point;
 			point.x = fmaxf(h1.position.x, fminf(h2.position.x, h1.position.x + h1.size.x));
 			point.y = fmaxf(h1.position.y, fminf(h2.position.y, h1.position.y + h1.size.y));
 			point.z = fmaxf(h1.position.z, fminf(h2.position.z, h1.position.z + h1.size.z));
@@ -36,14 +36,14 @@ namespace octdoc
 		BV_Cuboid::BV_Cuboid() :
 			position(),
 			size() {}
-		BV_Cuboid::BV_Cuboid(mth::float3 position, mth::float3 size) :
+		BV_Cuboid::BV_Cuboid(mth::double3 position, mth::double3 size) :
 			position(position),
 			size(size) {}
 		BV_Cuboid::U BV_Cuboid::CreateU()
 		{
 			return std::make_unique<BV_Cuboid>();
 		}
-		BV_Cuboid::U BV_Cuboid::CreateU(mth::float3 position, mth::float3 size)
+		BV_Cuboid::U BV_Cuboid::CreateU(mth::double3 position, mth::double3 size)
 		{
 			return std::make_unique<BV_Cuboid>(position, size);
 		}
@@ -51,7 +51,7 @@ namespace octdoc
 		{
 			return std::make_shared<BV_Cuboid>();
 		}
-		BV_Cuboid::P BV_Cuboid::CreateP(mth::float3 position, mth::float3 size)
+		BV_Cuboid::P BV_Cuboid::CreateP(mth::double3 position, mth::double3 size)
 		{
 			return std::make_shared<BV_Cuboid>(position, size);
 		}
@@ -71,14 +71,14 @@ namespace octdoc
 		BV_Sphere::BV_Sphere() :
 			position(), 
 			radius(0.0f) {}
-		BV_Sphere::BV_Sphere(mth::float3 position, float radius) :
+		BV_Sphere::BV_Sphere(mth::double3 position, double radius) :
 			position(position),
 			radius(radius) {}
 		BV_Sphere::U BV_Sphere::CreateU()
 		{
 			return std::make_unique<BV_Sphere>();
 		}
-		BV_Sphere::U BV_Sphere::CreateU(mth::float3 position, float radius)
+		BV_Sphere::U BV_Sphere::CreateU(mth::double3 position, double radius)
 		{
 			return std::make_unique<BV_Sphere>(position, radius);
 		}
@@ -86,7 +86,7 @@ namespace octdoc
 		{
 			return std::make_shared<BV_Sphere>();
 		}
-		BV_Sphere::P BV_Sphere::CreateP(mth::float3 position, float radius)
+		BV_Sphere::P BV_Sphere::CreateP(mth::double3 position, double radius)
 		{
 			return std::make_shared<BV_Sphere>(position, radius);
 		}

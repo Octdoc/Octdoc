@@ -67,28 +67,27 @@ void TestArea::OnStart(octdoc::gfx::Graphics& graphics)
 	m_cameraBuffer = octdoc::gfx::ShaderBuffer::CreateP(graphics, sizeof(octdoc::mth::float4x4));
 	m_lightBuffer = octdoc::gfx::ShaderBuffer::CreateP(graphics, sizeof(float) * 8);
 	octdoc::hlp::ModelLoader loader;
-	loader.LoadModel(L"Media/cube.omd");
-	//loader.CreateSphere(octdoc::mth::float3(), 0.75f, 20, 10, octdoc::gfx::ModelType::PTM);
-	//loader.CreateCube(octdoc::mth::float3(-1.0f), octdoc::mth::float3(2.0f), octdoc::gfx::ModelType::PTM);
-	//loader.CreateQuad(octdoc::mth::float2(-1.0f), octdoc::mth::float2(2.0f), octdoc::gfx::ModelType::PTM);
-	//loader.ChangeModelType(octdoc::gfx::ModelType::PTM);
 
-	//SetTextureMandelbrot(loader.getTexture(0));
-	//SetTextureToFile(loader.getTexture(0), L"Media/test.png");
-	//SetTextureToFile(loader.getNormalmap(0), L"Media/normalmap.png");
-	SetTextureToFile(loader.getTexture(0), L"Media/Arimura_Hinae.gif");
-	//SetTextureToFile(loader.getTexture(0), L"Media/Shimada_Alice.gif");
-	//SetTextureToFile(loader.getTexture(0), L"Media/mipmaptest.dds");
-
+	loader.CreateSphere(octdoc::mth::float3(), 1.0f, 200, 100, octdoc::gfx::ModelType::PN);
+	//loader.Transform(octdoc::mth::float4x4::Scaling(0.75f, 1.5f, 1.0f));
 	m_entity = octdoc::gfx::Entity::CreateP(graphics, loader);
-	loader.CreateCube(octdoc::mth::float3(-1.0f), octdoc::mth::float3(2.0f), octdoc::gfx::ModelType::PTN);
-	m_tv = octdoc::gfx::Entity::CreateP(graphics, loader);
-	m_tvScreen = octdoc::gfx::RenderTargetTexture::CreateP(graphics, 512, 512);
-	m_tv->getMaterial(0)->setTexture(m_tvScreen);
+	m_entity->scale = octdoc::mth::float3(0.75f, 1.5f, 1.0f);
+	m_entity->MoveUp(5.0f);
+
+	loader.CreateQuad(octdoc::mth::float2(-5.0f, -5.0f), octdoc::mth::float2(4.6f, 4.6f), octdoc::gfx::ModelType::PN);
+	//loader.CreateCube(octdoc::mth::float3(-1.0f, -1.0f, -1.0f), octdoc::mth::float3(2.0f, 2.0f, 2.0f), octdoc::gfx::ModelType::PN);
+	//loader.CreateSphere(octdoc::mth::float3(-1.0f, -1.0f, -1.0f), 1.0f, 20, 10, octdoc::gfx::ModelType::PN);
+	//loader.Transform(octdoc::mth::float4x4::Rotation(1.0f, 2.0f, 3.0f));
+	m_floor = octdoc::gfx::Entity::CreateP(graphics, loader);
+	m_floor->setColor(octdoc::mth::float4(0.3f, 0.9f, 0.4f, 1.0f));
+	loader.MakeHitboxFromVertices();
+	m_square = octdoc::physx::Collider::CreateU(loader);
+
 	m_camera.position.z = -5.0f;
 	m_sampler = octdoc::gfx::SamplerState::CreateP(graphics, true, true);
 	m_sampler->SetToPixelShader(graphics);
-	//graphics.EnableAlphaBlending(false);
+
+	m_keyFlags = 0;
 }
 
 void TestArea::OnKeyDown(octdoc::gfx::KeyEvent& e)
@@ -96,11 +95,55 @@ void TestArea::OnKeyDown(octdoc::gfx::KeyEvent& e)
 	if (e.keyCode == octdoc::gfx::Input::KEY_ESCAPE)
 		m_gfx->Quit();
 	m_cameraController.KeyDown(e.keyCode);
+
+	switch (e.keyCode)
+	{
+	case octdoc::gfx::Input::KEY_UP:
+		m_keyFlags |= 1;
+		break;
+	case octdoc::gfx::Input::KEY_LEFT:
+		m_keyFlags |= 2;
+		break;
+	case octdoc::gfx::Input::KEY_DOWN:
+		m_keyFlags |= 4;
+		break;
+	case octdoc::gfx::Input::KEY_RIGHT:
+		m_keyFlags |= 8;
+		break;
+	case octdoc::gfx::Input::KEY_PRIOR:
+		m_keyFlags |= 16;
+		break;
+	case octdoc::gfx::Input::KEY_NEXT:
+		m_keyFlags |= 32;
+		break;
+	}
 }
 
 void TestArea::OnKeyUp(octdoc::gfx::KeyEvent& e)
 {
 	m_cameraController.KeyUp(e.keyCode);
+
+	switch (e.keyCode)
+	{
+	case octdoc::gfx::Input::KEY_UP:
+		m_keyFlags &= ~1;
+		break;
+	case octdoc::gfx::Input::KEY_LEFT:
+		m_keyFlags &= ~2;
+		break;
+	case octdoc::gfx::Input::KEY_DOWN:
+		m_keyFlags &= ~4;
+		break;
+	case octdoc::gfx::Input::KEY_RIGHT:
+		m_keyFlags &= ~8;
+		break;
+	case octdoc::gfx::Input::KEY_PRIOR:
+		m_keyFlags &= ~16;
+		break;
+	case octdoc::gfx::Input::KEY_NEXT:
+		m_keyFlags &= ~32;
+		break;
+	}
 }
 
 void TestArea::OnMouseMove(octdoc::gfx::MouseMoveEvent& e)
@@ -111,6 +154,7 @@ void TestArea::OnMouseMove(octdoc::gfx::MouseMoveEvent& e)
 
 void TestArea::OnUpdate(octdoc::gfx::Graphics& graphics, float deltaTime)
 {
+	if (deltaTime > 0.02f) deltaTime = 0.02f;
 	octdoc::mth::float4x4 cameraBuffer;
 	m_cameraController.Update(deltaTime);
 	m_camera.Update();
@@ -121,12 +165,32 @@ void TestArea::OnUpdate(octdoc::gfx::Graphics& graphics, float deltaTime)
 	float lightBuffer[] = {
 		1.0f, 1.0f, 1.0f, 1.0f,
 		m_camera.position.x, m_camera.position.y, m_camera.position.z,
-		0.75f
+		0.7f
 	};
 	m_lightBuffer->WriteBuffer(graphics, lightBuffer);
 	m_lightBuffer->SetToPixelShader(graphics, 0);
 
+	float speed = 4.0f * deltaTime;
+	octdoc::mth::float3 movement;
+	if (m_keyFlags & 1)
+		movement.z += speed;
+	if (m_keyFlags & 2)
+		movement.x -= speed;
+	if (m_keyFlags & 4)
+		movement.z -= speed;
+	if (m_keyFlags & 8)
+		movement.x += speed;
+	if (m_keyFlags & 16)
+		movement.y += speed;
+	if (m_keyFlags & 32)
+		movement.y -= speed;
+	octdoc::physx::CollisionData collData;
+	movement = octdoc::mth::float3x3::RotationY(m_camera.rotation.y) * movement;
+	m_square->CollidesWithEllipsoid((octdoc::mth::Position<double>)((octdoc::mth::Position<float>) * m_entity), (octdoc::mth::double3)movement, collData);
+	m_entity->Move(movement * (collData.time - 1e-3f));
+
 	graphics.ClearRenderTarget(0.75f, 0.75f, 0.875f);
+	m_floor->Render(graphics);
 	m_entity->Render(graphics);
 	graphics.Present();
 }

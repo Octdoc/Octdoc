@@ -91,59 +91,6 @@ namespace octdoc
 		}
 		void ModelLoader::CreateSphere(mth::float3 centre, float radius, int longitudes, int latitudes, unsigned modelType)
 		{
-			/*struct Vertex
-			{
-				mth::float3 p;
-				mth::float2 t;
-				mth::float3 n;
-			};
-			std::vector<Vertex> vertices(longitudes * latitudes + 2);
-			std::vector<unsigned> indices(3 * longitudes + 6 * (latitudes - 1) * longitudes + 3 * longitudes);
-			float lonStep = mth::PI * 2.0f / longitudes;
-			float latStep = mth::PI / (latitudes + 1);
-			int counter = 0;
-			vertices[counter++] = Vertex{ mth::float3(0.0f, radius, 0.0f), mth::float2(0.5f, 0.0f), mth::float3(0.0f, 1.0f, 0.0f) };
-			for (int i = 0; i < latitudes; i++)
-			{
-				float lat = (i + 1) * latStep;
-				for (int j = 0; j < longitudes; j++)
-				{
-					float lon = j * lonStep;
-					mth::float3 v(sinf(lon) * sinf(lat), cosf(lat), cosf(lon) * sinf(lat));
-					vertices[counter++] = Vertex{ v * radius, mth::float2(1.0f - lon / (mth::PI * 2.0f), lat / mth::PI), v };
-				}
-			}
-			vertices[counter++] = Vertex{ mth::float3(0.0f, -radius, 0.0f), mth::float2(0.5f, 1.0f), mth::float3(0.0f, -1.0f, 0.0f) };
-			counter = 0;
-			for (int lon = 0; lon < longitudes; lon++)
-			{
-				indices[counter++] = 0;
-				indices[counter++] = lon % longitudes + 1;
-				indices[counter++] = (lon + 1) % longitudes + 1;
-			}
-			for (int lat = 0; lat < latitudes - 1; lat++)
-			{
-				for (int lon = 0; lon < longitudes; lon++)
-				{
-					indices[counter++] = lat * longitudes + 1 + lon % longitudes;
-					indices[counter++] = lat * longitudes + 1 + (lon + 1) % longitudes + longitudes;
-					indices[counter++] = lat * longitudes + 1 + (lon + 1) % longitudes;
-					indices[counter++] = lat * longitudes + 1 + lon % longitudes;
-					indices[counter++] = lat * longitudes + 1 + lon % longitudes + longitudes;
-					indices[counter++] = lat * longitudes + 1 + (lon + 1) % longitudes + longitudes;
-				}
-			}
-			int last = int(vertices.size() - 1);
-			for (int lon = 0; lon < longitudes; lon++)
-			{
-				indices[counter++] = last;
-				indices[counter++] = (latitudes - 1) * longitudes + (lon + 1) % longitudes + 1;
-				indices[counter++] = (latitudes - 1) * longitudes + lon % longitudes + 1;
-			}
-
-			Create(vertices.data(), vertices.size(), indices.data(), indices.size(), gfx::ModelType::POSITION | gfx::ModelType::TEXCOORD | gfx::ModelType::NORMAL);
-			ChangeModelType(modelType);*/
-
 			std::vector<mth::float3> vertices(longitudes * latitudes + 2);
 			std::vector<unsigned> indices(3 * longitudes + 6 * (latitudes - 1) * longitudes + 3 * longitudes);
 			float lonStep = mth::PI * 2.0f / longitudes;
@@ -462,6 +409,12 @@ namespace octdoc
 					m_data.vertices[i * vertexSize + offset + 2] = v.z;
 				}
 			}
+			if (HasHitbox())
+			{
+				mth::double4x4 trmat = (mth::double4x4)transform;
+				for (mth::double3& v : m_data.hitboxVertices)
+					v = mth::Transform(trmat, v);
+			}
 		}
 		void ModelLoader::CalculateNormals()
 		{
@@ -507,8 +460,8 @@ namespace octdoc
 					}
 					else
 					{
-						m_data.vertices[i * vs_ve + offset + 0] = (atan2f(p.x, -p.z) + mth::PI) / (mth::PI * 2.0f);
-						m_data.vertices[i * vs_ve + offset + 1] = acosf(p.y) / mth::PI;
+						m_data.vertices[i * vs_ve + offset + 0].f = (atan2f(p.x, -p.z) + mth::PI) / (mth::PI * 2.0f);
+						m_data.vertices[i * vs_ve + offset + 1].f = acosf(p.y) / mth::PI;
 					}
 				}
 			}
@@ -560,16 +513,62 @@ namespace octdoc
 		}
 		void ModelLoader::MakeHitboxFromVertices()
 		{
+			unsigned vs_ve = m_data.vertexSizeInBytes / 4;
+			m_data.hitboxVertices.resize(m_data.vertexCount);
+			mth::double3 minpos, maxpos;
+			minpos.x = maxpos.x = m_data.vertices[0].f;
+			minpos.y = maxpos.y = m_data.vertices[1].f;
+			minpos.z = maxpos.z = m_data.vertices[2].f;
+			for (unsigned i = 0; i < m_data.vertexCount; i++)
+			{
+				mth::double3& v = m_data.hitboxVertices[i];
+				v.x = m_data.vertices[vs_ve * i + 0].f;
+				v.y = m_data.vertices[vs_ve * i + 1].f;
+				v.z = m_data.vertices[vs_ve * i + 2].f;
+				if (minpos.x > v.x) minpos.x = v.x;
+				if (minpos.y > v.y) minpos.y = v.y;
+				if (minpos.z > v.z) minpos.z = v.z;
+				if (maxpos.x < v.x) maxpos.x = v.x;
+				if (maxpos.y < v.y) maxpos.y = v.y;
+				if (maxpos.z < v.z) maxpos.z = v.z;
+			}
+			m_data.hitboxIndices = m_data.indices;
+			m_data.boundingVolumeType = physx::BoundingVolume::CUBOID;
+			m_data.bvPosition = minpos;
+			m_data.bvCuboidSize = maxpos - minpos;
 		}
 		void ModelLoader::MakeVerticesFromHitbox()
 		{
+			m_data.vertexCount = m_data.hitboxVertices.size();
+			m_data.vertices.resize(m_data.vertexCount * 3);
+			m_data.modelType = gfx::ModelType::P;
+			m_data.vertexSizeInBytes = gfx::ModelType::VertexSizeInBytes(m_data.modelType);
+			for (unsigned i = 0; i < m_data.vertexCount; i++)
+			{
+				m_data.vertices[3 * i + 0].f = m_data.hitboxVertices[i].x;
+				m_data.vertices[3 * i + 1].f = m_data.hitboxVertices[i].y;
+				m_data.vertices[3 * i + 2].f = m_data.hitboxVertices[i].z;
+			}
+			m_data.indices = m_data.hitboxIndices;
+			m_data.vertexGroups.resize(1);
+			m_data.vertexGroups[0].startIndex = 0;
+			m_data.vertexGroups[0].indexCount = m_data.indices.size();
+			m_data.vertexGroups[0].materialIndex = 0;
+			m_data.materials.resize(1);
+			m_data.materials[0].Clear();
 		}
 		bool ModelLoader::HasHitbox()
 		{
-			return false;
+			return m_data.boundingVolumeType != physx::BoundingVolume::NO_TYPE;
 		}
 		void ModelLoader::SwapHitboxes(ModelLoader& other)
 		{
+			std::swap(m_data.boundingVolumeType, other.m_data.boundingVolumeType);
+			std::swap(m_data.bvPosition, other.m_data.bvPosition);
+			std::swap(m_data.bvCuboidSize, other.m_data.bvCuboidSize);
+			std::swap(m_data.bvSphereRadius, other.m_data.bvSphereRadius);
+			std::swap(m_data.hitboxVertices, other.m_data.hitboxVertices);
+			std::swap(m_data.hitboxIndices, other.m_data.hitboxIndices);
 		}
 	}
 }

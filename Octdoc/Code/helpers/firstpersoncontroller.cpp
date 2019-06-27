@@ -4,7 +4,7 @@ namespace octdoc
 {
 	namespace hlp
 	{
-		FirstPersonController::FirstPersonController(mth::Position& target) :
+		FirstPersonController::FirstPersonController(mth::Position<float>& target) :
 			m_target(target),
 			m_speed(1.0f),
 			m_sensitivity(0.008f),

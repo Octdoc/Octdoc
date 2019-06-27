@@ -14,34 +14,35 @@ namespace octdoc
 		struct CollisionData
 		{
 			//negative time if not colliding
-			float time;
-			mth::float3 normal;
+			double time;
+			mth::double3 normal;
 
 			CollisionData();
 		};
 
-		class Collider :public mth::Position
+		class Collider :public mth::Position<double>
 		{
 			SMART_PTR(Collider)
 		private:
 			BV_Cuboid m_aabb;
-			std::vector<mth::Triangle3D> m_hitboxMesh;
+			std::vector<mth::double3> m_hitboxVertices;
+			std::vector<unsigned> m_hitboxIndices;
 
 		private:
 			void CalculateAABB();
-			bool BoundingVolumeIntersects(mth::Position& ellipsoid);
+			bool BoundingVolumeIntersects(mth::Position<double> ellipsoid, mth::double3 velocity);
 
 		public:
 			Collider(hlp::ModelLoader& loader);
-			Collider(mth::float3 triangles[], int triangleCount);
+			Collider(mth::double3 triangles[], int triangleCount);
 			static Collider::U CreateU(hlp::ModelLoader& loader);
-			static Collider::U CreateU(mth::float3 triangles[], int triangleCount);
+			static Collider::U CreateU(mth::double3 triangles[], int triangleCount);
 			static Collider::P CreateP(hlp::ModelLoader& loader);
-			static Collider::P CreateP(mth::float3 triangles[], int triangleCount);
+			static Collider::P CreateP(mth::double3 triangles[], int triangleCount);
 
 			inline BV_Cuboid& getBoundingVolume() { return m_aabb; }
 
-			bool CollidesWithEllipsoid(mth::Position ellipsoid, mth::float3 velocity, CollisionData& collisionData);
+			bool CollidesWithEllipsoid(mth::Position<double> ellipsoid, mth::double3 velocity, CollisionData& collisionData);
 		};
 	}
 }

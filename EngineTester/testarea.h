@@ -5,18 +5,21 @@
 #include "graphics/camera.h"
 #include "graphics/samplerstate.h"
 #include "helpers/firstpersoncontroller.h"
+#include "physics/collider.h"
 
 class TestArea : public octdoc::gfx::Application
 {
 	octdoc::gfx::Graphics *m_gfx;
 	octdoc::gfx::Camera m_camera;
 	octdoc::hlp::FirstPersonController m_cameraController;
-	octdoc::gfx::Entity::P m_entity;
-	octdoc::gfx::RenderTargetTexture::P m_tvScreen;
-	octdoc::gfx::Entity::P m_tv;
 	octdoc::gfx::ShaderBuffer::P m_cameraBuffer;
 	octdoc::gfx::ShaderBuffer::P m_lightBuffer;
 	octdoc::gfx::SamplerState::P m_sampler;
+	octdoc::gfx::Entity::P m_entity;
+	octdoc::gfx::Entity::P m_floor;
+	octdoc::physx::Collider::U m_square;
+	//octdoc::gfx::Entity::P m_cube;
+	char m_keyFlags;
 
 private:
 	void SetTextureMandelbrot(octdoc::hlp::ModelData::MaterialData::Texture& texture);
