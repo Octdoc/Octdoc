@@ -86,9 +86,9 @@ namespace octdoc
 		{
 			if (!BoundingVolumeIntersects(ellipsoid, velocity))
 				return false;
-			mth::double4x4 transformMatrix = mth::double4x4::Scaling(mth::double3(1.0) / ellipsoid.scale) * (mth::double4x4)GetWorldMatrix();
-			mth::double3 trPos = ellipsoid.position / ellipsoid.scale;	//transformed position
-			mth::double3 trVel = velocity / ellipsoid.scale;	//transformed velocity, don't apply translation
+			mth::double4x4 transformMatrix = ellipsoid.GetWorldMatrixInv() * (mth::double4x4)GetWorldMatrix();
+			mth::double3 trPos;	//transformed position
+			mth::double3 trVel = (mth::double3x3::Rotation(ellipsoid.rotation) * velocity) / ellipsoid.scale;	//transformed velocity
 			double previousCollTime = collisionData.time;	//save previous collision so we know if collision happenes here
 			for (unsigned i = 0; i < m_hitboxIndices.size(); i += 3)
 			{
@@ -121,24 +121,24 @@ namespace octdoc
 					if (time > 0.0 && time < collisionData.time)
 					{
 						collisionData.time = time;
-						collisionData.normal = point.p - trPos;
+						collisionData.normal = point.getPoint() - trPos;
 					}
 				}
 				//check edges
 				for (unsigned v = 0; v < 3; v++)
 				{
 					mth::double3 p1 = triangle.getVertex(v), p2 = triangle.getVertex((v + 1) % 3);
-					double lineLen = (p1 - p2).Length();
-					mth::Line3D line(p2, (p1 - p2) / lineLen);
+					double lineLen = (p2 - p1).Length();
+					mth::Line3D line(p1, (p2 - p1) / lineLen);
 					time = line.TimeToGetClose(trPos, trVel, 1.0);
 					if (time > 0.0 && time < collisionData.time)
 					{
 						//check if line is hit between vertices
-						double len = line.v.Dot(trPos + trVel * time - line.p);
+						double len = line.getDirection().Dot(trPos + trVel * time - line.getPoint());
 						if (len >= 0.0 && len <= lineLen)
 						{
 							collisionData.time = time;
-							collisionData.normal = line.p + line.v * time - trPos;
+							collisionData.normal = line.getPoint() + line.getDirection() * time - trPos;
 						}
 					}
 				}
