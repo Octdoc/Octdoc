@@ -364,17 +364,10 @@ namespace octdoc
 			mth::float3 v;
 			if (gfx::ModelType::HasPositions(m_data.modelType))
 			{
-				unsigned offset = gfx::ModelType::PositionOffset(m_data.modelType);
 				for (unsigned i = 0; i < getVertexCount(); i++)
 				{
-					v = mth::Transform(transform, mth::float3(
-						m_data.vertices[i * vertexSize + offset + 0].f,
-						m_data.vertices[i * vertexSize + offset + 1].f,
-						m_data.vertices[i * vertexSize + offset + 2].f
-					));
-					m_data.vertices[i * vertexSize + offset + 0] = v.x;
-					m_data.vertices[i * vertexSize + offset + 1] = v.y;
-					m_data.vertices[i * vertexSize + offset + 2] = v.z;
+					mth::float3& v = *(mth::float3*)(&m_data.vertices[i * vertexSize]);
+					v = mth::Transform(transform, v);
 				}
 			}
 			if (gfx::ModelType::HasNormals(m_data.modelType))
@@ -382,15 +375,8 @@ namespace octdoc
 				unsigned offset = gfx::ModelType::NormalOffset(m_data.modelType);
 				for (unsigned i = 0; i < getVertexCount(); i++)
 				{
-					v = surfaceTransform * mth::float3(
-						m_data.vertices[i * vertexSize + offset + 0].f,
-						m_data.vertices[i * vertexSize + offset + 1].f,
-						m_data.vertices[i * vertexSize + offset + 2].f
-					);
-					v.Normalize();
-					m_data.vertices[i * vertexSize + offset + 0] = v.x;
-					m_data.vertices[i * vertexSize + offset + 1] = v.y;
-					m_data.vertices[i * vertexSize + offset + 2] = v.z;
+					mth::float3& v = *(mth::float3*)(&m_data.vertices[i * vertexSize + offset]);
+					v = (surfaceTransform * v).Normalized();
 				}
 			}
 			if (gfx::ModelType::HasTangents(m_data.modelType))
@@ -398,15 +384,8 @@ namespace octdoc
 				unsigned offset = gfx::ModelType::TangentOffset(m_data.modelType);
 				for (unsigned i = 0; i < getVertexCount(); i++)
 				{
-					v = surfaceTransform * mth::float3(
-						m_data.vertices[i * vertexSize + offset + 0].f,
-						m_data.vertices[i * vertexSize + offset + 1].f,
-						m_data.vertices[i * vertexSize + offset + 2].f
-					);
-					v.Normalize();
-					m_data.vertices[i * vertexSize + offset + 0] = v.x;
-					m_data.vertices[i * vertexSize + offset + 1] = v.y;
-					m_data.vertices[i * vertexSize + offset + 2] = v.z;
+					mth::float3& v = *(mth::float3*)(&m_data.vertices[i * vertexSize + offset]);
+					v = (surfaceTransform * v).Normalized();
 				}
 			}
 			if (HasHitbox())

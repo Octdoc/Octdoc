@@ -84,11 +84,9 @@ namespace octdoc
 		}
 		bool Collider::CollidesWithEllipsoid(mth::Position<double> ellipsoid, mth::double3 velocity, CollisionData& collisionData)
 		{
-			if (!BoundingVolumeIntersects(ellipsoid, velocity))
-				return false;
+			//if (!BoundingVolumeIntersects(ellipsoid, velocity)) return false;
 			mth::double4x4 transformMatrix = ellipsoid.GetWorldMatrixInv() * (mth::double4x4)GetWorldMatrix();
-			mth::double3 trPos;	//transformed position
-			mth::double3 trVel = (mth::double3x3::Rotation(ellipsoid.rotation) * velocity) / ellipsoid.scale;	//transformed velocity
+			mth::double3 trVel = ellipsoid.GetScaleMatrixInv3x3() * (ellipsoid.GetRotationMatrixInv3x3() * velocity);	//transformed velocity
 			double previousCollTime = collisionData.time;	//save previous collision so we know if collision happenes here
 			for (unsigned i = 0; i < m_hitboxIndices.size(); i += 3)
 			{
@@ -97,15 +95,15 @@ namespace octdoc
 					mth::Transform(transformMatrix, m_hitboxVertices[m_hitboxIndices[i + 1]]),
 					mth::Transform(transformMatrix, m_hitboxVertices[m_hitboxIndices[i + 2]]));
 				//if won't get close to the plain to intersect, skip
-				if (triangle.getPlain().Distance(trPos + trVel) > 1.0)
+				if (triangle.getPlain().Distance(trVel) > 1.0)
 					continue;
 				//how long till it reaches the triangle plain
-				double time = triangle.getPlain().TimeToGetClose(trPos, trVel, 1.0);
+				double time = triangle.getPlain().TimeToGetClose(mth::double3(), trVel, 1.0);
 				if (time < collisionData.time)	//reaches current plain before any other
 				{
 					if (time >= 0.0)	//over the plain
 					{
-						if (triangle.IsPointOver(trPos + time * velocity))	//hits the triangle face
+						if (triangle.IsPointOver(time * trVel))	//hits the triangle face
 						{
 							collisionData.time = time;
 							collisionData.normal = triangle.getPlainNormal();
@@ -117,11 +115,11 @@ namespace octdoc
 				for (unsigned v = 0; v < 3; v++)
 				{
 					mth::Point3D point(triangle.getVertex(v));
-					time = point.TimeToGetClose(trPos, trVel, 1.0);
+					time = point.TimeToGetClose(mth::double3(), trVel, 1.0);
 					if (time > 0.0 && time < collisionData.time)
 					{
 						collisionData.time = time;
-						collisionData.normal = point.getPoint() - trPos;
+						collisionData.normal = point.getPoint();
 					}
 				}
 				//check edges
@@ -130,15 +128,15 @@ namespace octdoc
 					mth::double3 p1 = triangle.getVertex(v), p2 = triangle.getVertex((v + 1) % 3);
 					double lineLen = (p2 - p1).Length();
 					mth::Line3D line(p1, (p2 - p1) / lineLen);
-					time = line.TimeToGetClose(trPos, trVel, 1.0);
+					time = line.TimeToGetClose(mth::double3(), trVel, 1.0);
 					if (time > 0.0 && time < collisionData.time)
 					{
 						//check if line is hit between vertices
-						double len = line.getDirection().Dot(trPos + trVel * time - line.getPoint());
+						double len = line.getDirection().Dot(trVel * time - line.getPoint());
 						if (len >= 0.0 && len <= lineLen)
 						{
 							collisionData.time = time;
-							collisionData.normal = line.getPoint() + line.getDirection() * time - trPos;
+							collisionData.normal = line.getPoint() + line.getDirection() * time;
 						}
 					}
 				}
