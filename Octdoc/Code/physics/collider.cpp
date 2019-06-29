@@ -4,7 +4,8 @@ namespace octdoc
 {
 	namespace physx
 	{
-		CollisionData::CollisionData() :time(1.0f), normal() {}
+		CollisionData::CollisionData() :time(1.0f), normal(), point() {}
+
 		void Collider::CalculateAABB()
 		{
 			if (m_hitboxVertices.empty())
@@ -26,13 +27,9 @@ namespace octdoc
 		}
 		bool Collider::BoundingVolumeIntersects(mth::Position<double> ellipsoid, mth::double3 velocity)
 		{
-			//translate and scale bounding volume
-			//don't rotate, so it stays aabb
-			BV_Cuboid bvCollider(ellipsoid.scale * m_aabb.position, ellipsoid.scale * m_aabb.size);
-			//ellipsoid gets a bounding sphere
-			//ellipsoid's spherical bounding volume gets rotated in opposite direction
-			BV_Sphere bvEllipsoid((ellipsoid.position + velocity) * mth::double3x3::Rotation(ellipsoid.rotation), ellipsoid.scale.Max());
-			return bvCollider.Intersects(bvEllipsoid);
+			//ellipsoid gets a bounding sphere with transformed centre
+			BV_Sphere bvEllipsoid(((ellipsoid.position + velocity) * mth::double3x3::Rotation(rotation)) / scale, ellipsoid.scale.Max());
+			return m_aabb.Intersects(bvEllipsoid);
 		}
 		Collider::Collider(hlp::ModelLoader& loader)
 		{
@@ -48,7 +45,7 @@ namespace octdoc
 				break;
 			case BoundingVolume::SPHERE:
 				m_aabb.position = loader.getBoundingVolumePosition() - loader.getBoundingVolumeSphereRadius();
-				m_aabb.size = 2.0f * loader.getBoundingVolumeSphereRadius();
+				m_aabb.size = 2 * loader.getBoundingVolumeSphereRadius();
 				break;
 			case BoundingVolume::NO_TYPE:
 				CalculateAABB();
@@ -84,9 +81,12 @@ namespace octdoc
 		}
 		bool Collider::CollidesWithEllipsoid(mth::Position<double> ellipsoid, mth::double3 velocity, CollisionData& collisionData)
 		{
-			//if (!BoundingVolumeIntersects(ellipsoid, velocity)) return false;
-			mth::double4x4 transformMatrix = ellipsoid.GetWorldMatrixInv() * (mth::double4x4)GetWorldMatrix();
-			mth::double3 trVel = ellipsoid.GetScaleMatrixInv3x3() * (ellipsoid.GetRotationMatrixInv3x3() * velocity);	//transformed velocity
+			if (!BoundingVolumeIntersects(ellipsoid, velocity))
+				return false;
+			mth::double4x4 ellipsoidWorldInv = ellipsoid.GetWorldMatrixInv();
+			mth::double3x3 ellipsoidNoTranslateInv(ellipsoidWorldInv);
+			mth::double4x4 transformMatrix = ellipsoidWorldInv * (mth::double4x4)GetWorldMatrix();
+			mth::double3 trVel = ellipsoidNoTranslateInv * velocity;	//transformed velocity
 			double previousCollTime = collisionData.time;	//save previous collision so we know if collision happenes here
 			for (unsigned i = 0; i < m_hitboxIndices.size(); i += 3)
 			{
@@ -136,7 +136,7 @@ namespace octdoc
 						if (len >= 0.0 && len <= lineLen)
 						{
 							collisionData.time = time;
-							collisionData.normal = line.getPoint() + line.getDirection() * time;
+							collisionData.normal = line.getPoint() + line.getDirection() * len;
 						}
 					}
 				}
@@ -146,8 +146,8 @@ namespace octdoc
 				return false;
 			//collision happened
 			//transform normal back to original space
-			transformMatrix.Transpose();
-			collisionData.normal = mth::Transform(transformMatrix, collisionData.normal);
+			collisionData.point = mth::Transform(ellipsoid.GetWorldMatrix(), collisionData.normal);
+			collisionData.normal = (collisionData.normal * ellipsoidNoTranslateInv).Normalized();
 			return true;
 		}
 	}

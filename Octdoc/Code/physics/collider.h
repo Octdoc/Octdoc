@@ -16,6 +16,7 @@ namespace octdoc
 			//negative time if not colliding
 			double time;
 			mth::double3 normal;
+			mth::double3 point;
 
 			CollisionData();
 		};

@@ -71,9 +71,11 @@ void TestArea::OnStart(octdoc::gfx::Graphics& graphics)
 	loader.CreateSphere(octdoc::mth::float3(), 1.0f, 200, 100, octdoc::gfx::ModelType::PN);
 	//loader.Transform(octdoc::mth::float4x4::Scaling(0.75f, 1.5f, 1.0f));
 	m_entity = octdoc::gfx::Entity::CreateP(graphics, loader);
-	m_entity->scale = octdoc::mth::float3(0.75f, 1.5f, 1.0f);
 	m_entity->rotation = octdoc::mth::float3(0.75f, 1.5f, 1.0f);
+	m_entity->scale = octdoc::mth::float3(0.75f, 1.5f, 1.0f);
 	m_entity->MoveUp(5.0f);
+	//m_entity->MoveRight(1.25f);
+	//m_entity->MoveForward(1.25f);
 
 	//loader.CreateQuad(octdoc::mth::float2(-5.0f, -5.0f), octdoc::mth::float2(4.6f, 4.6f), octdoc::gfx::ModelType::PN);
 	loader.CreateCube(octdoc::mth::float3(-1.0f, -1.0f, -1.0f), octdoc::mth::float3(2.0f, 2.0f, 2.0f), octdoc::gfx::ModelType::PN);
@@ -81,6 +83,7 @@ void TestArea::OnStart(octdoc::gfx::Graphics& graphics)
 	//loader.CreateSphere(octdoc::mth::float3(-1.0f, -1.0f, -1.0f), 1.0f, 20, 10, octdoc::gfx::ModelType::PN);
 	//loader.Transform(octdoc::mth::float4x4::Rotation(1.0f, 2.0f, 3.0f));
 	m_floor = octdoc::gfx::Entity::CreateP(graphics, loader);
+	float r = octdoc::mth::PI * 0.25f;
 	m_floor->setColor(octdoc::mth::float4(0.3f, 0.9f, 0.4f, 1.0f));
 	m_floor->rotation = octdoc::mth::float3(1, 1.2, 0.3);
 	m_floor->scale = octdoc::mth::float3(1, 1.2, 1.3);
@@ -174,8 +177,8 @@ void TestArea::OnUpdate(octdoc::gfx::Graphics& graphics, float deltaTime)
 	m_lightBuffer->WriteBuffer(graphics, lightBuffer);
 	m_lightBuffer->SetToPixelShader(graphics, 0);
 
-	float speed = 4.0f * deltaTime;
-	octdoc::mth::float3 movement;
+	double speed = 4 * deltaTime;
+	octdoc::mth::double3 movement;
 	if (m_keyFlags & 1)
 		movement.z += speed;
 	if (m_keyFlags & 2)
@@ -188,13 +191,20 @@ void TestArea::OnUpdate(octdoc::gfx::Graphics& graphics, float deltaTime)
 		movement.y += speed;
 	if (m_keyFlags & 32)
 		movement.y -= speed;
-	octdoc::physx::CollisionData collData;
-	movement = octdoc::mth::float3x3::RotationY(m_camera.rotation.y) * movement;
+
 	m_square->position = (octdoc::mth::double3)m_floor->position;
 	m_square->rotation = (octdoc::mth::double3)m_floor->rotation;
 	m_square->scale = (octdoc::mth::double3)m_floor->scale;
-	m_square->CollidesWithEllipsoid((octdoc::mth::Position<double>)((octdoc::mth::Position<float>)(*m_entity)), (octdoc::mth::double3)movement, collData);
-	m_entity->Move(movement * (collData.time - 1e-3f));
+	movement = octdoc::mth::double3x3::RotationY(m_camera.rotation.y) * movement;
+	for (int i = 0; i < 5; i++)
+	{
+		octdoc::physx::CollisionData collData;
+		bool collide = m_square->CollidesWithEllipsoid((octdoc::mth::Position<double>)((octdoc::mth::Position<float>)(*m_entity)), (octdoc::mth::double3)movement, collData);
+		m_entity->Move((octdoc::mth::float3)(movement * (collData.time - 1e-3)));
+		if (!collide)
+			break;
+		movement -= collData.normal * collData.normal.Dot(movement);
+	}
 
 	graphics.ClearRenderTarget(0.75f, 0.75f, 0.875f);
 	m_floor->Render(graphics);
