@@ -1,7 +1,7 @@
 #pragma once
 
 #include "graphics/modeltype.h"
-#include "geometry3d.h"
+#include "geometry3d.hpp"
 #include "physics/boundingvolume.h"
 #include <vector>
 #include <string>

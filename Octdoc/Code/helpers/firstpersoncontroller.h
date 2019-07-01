@@ -1,6 +1,6 @@
 #pragma once
 
-#include "position.h"
+#include "position.hpp"
 #include "graphics/input.h"
 
 namespace octdoc

@@ -90,7 +90,7 @@ namespace octdoc
 			double previousCollTime = collisionData.time;	//save previous collision so we know if collision happenes here
 			for (unsigned i = 0; i < m_hitboxIndices.size(); i += 3)
 			{
-				mth::Triangle3D triangle(
+				mth::Triangle3Dd triangle(
 					mth::Transform(transformMatrix, m_hitboxVertices[m_hitboxIndices[i + 0]]),
 					mth::Transform(transformMatrix, m_hitboxVertices[m_hitboxIndices[i + 1]]),
 					mth::Transform(transformMatrix, m_hitboxVertices[m_hitboxIndices[i + 2]]));
@@ -114,7 +114,7 @@ namespace octdoc
 				//misses the face, check if vertices got hit
 				for (unsigned v = 0; v < 3; v++)
 				{
-					mth::Point3D point(triangle.getVertex(v));
+					mth::Point3Dd point(triangle.getVertex(v));
 					time = point.TimeToGetClose(mth::double3(), trVel, 1.0);
 					if (time > 0.0 && time < collisionData.time)
 					{
@@ -127,7 +127,7 @@ namespace octdoc
 				{
 					mth::double3 p1 = triangle.getVertex(v), p2 = triangle.getVertex((v + 1) % 3);
 					double lineLen = (p2 - p1).Length();
-					mth::Line3D line(p1, (p2 - p1) / lineLen);
+					mth::Line3Dd line(p1, (p2 - p1) / lineLen);
 					time = line.TimeToGetClose(mth::double3(), trVel, 1.0);
 					if (time > 0.0 && time < collisionData.time)
 					{

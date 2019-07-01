@@ -78,15 +78,17 @@ void TestArea::OnStart(octdoc::gfx::Graphics& graphics)
 	//m_entity->MoveForward(1.25f);
 
 	//loader.CreateQuad(octdoc::mth::float2(-5.0f, -5.0f), octdoc::mth::float2(4.6f, 4.6f), octdoc::gfx::ModelType::PN);
-	loader.CreateCube(octdoc::mth::float3(-1.0f, -1.0f, -1.0f), octdoc::mth::float3(2.0f, 2.0f, 2.0f), octdoc::gfx::ModelType::PN);
+	//loader.CreateCube(octdoc::mth::float3(-1.0f, -1.0f, -1.0f), octdoc::mth::float3(2.0f, 2.0f, 2.0f), octdoc::gfx::ModelType::PN);
+	loader.LoadModel(L"Media/monkey.omd");
+	loader.Transform(octdoc::mth::float4x4::Scaling(3, 3, 3));
 	//SetTextureToFile(loader.getTexture(0), L"Media/Arimura_Hinae.gif");
 	//loader.CreateSphere(octdoc::mth::float3(-1.0f, -1.0f, -1.0f), 1.0f, 20, 10, octdoc::gfx::ModelType::PN);
 	//loader.Transform(octdoc::mth::float4x4::Rotation(1.0f, 2.0f, 3.0f));
 	m_floor = octdoc::gfx::Entity::CreateP(graphics, loader);
 	float r = octdoc::mth::PI * 0.25f;
 	m_floor->setColor(octdoc::mth::float4(0.3f, 0.9f, 0.4f, 1.0f));
-	m_floor->rotation = octdoc::mth::float3(1, 1.2, 0.3);
-	m_floor->scale = octdoc::mth::float3(1, 1.2, 1.3);
+	//m_floor->rotation = octdoc::mth::float3(1, 1.2, 0.3);
+	//m_floor->scale = octdoc::mth::float3(3);
 	loader.MakeHitboxFromVertices();
 	m_square = octdoc::physx::Collider::CreateU(loader);
 
@@ -199,7 +201,7 @@ void TestArea::OnUpdate(octdoc::gfx::Graphics& graphics, float deltaTime)
 	for (int i = 0; i < 5; i++)
 	{
 		octdoc::physx::CollisionData collData;
-		bool collide = m_square->CollidesWithEllipsoid((octdoc::mth::Position<double>)((octdoc::mth::Position<float>)(*m_entity)), (octdoc::mth::double3)movement, collData);
+		bool collide = m_square->CollidesWithEllipsoid(m_entity->WithType<double>(), movement.WithType<double>(), collData);
 		m_entity->Move((octdoc::mth::float3)(movement * (collData.time - 1e-3)));
 		if (!collide)
 			break;

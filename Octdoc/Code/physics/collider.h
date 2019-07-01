@@ -3,8 +3,7 @@
 #include "helpers/helpers.h"
 #include "helpers/modelloader.h"
 #include "boundingvolume.h"
-#include "position.h"
-#include "geometry3d.h"
+#include "geometry3d.hpp"
 #include <vector>
 
 namespace octdoc

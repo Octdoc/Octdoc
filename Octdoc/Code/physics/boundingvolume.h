@@ -1,7 +1,7 @@
 #pragma once
 
 #include "helpers/helpers.h"
-#include "linalg.h"
+#include "linalg.hpp"
 
 namespace octdoc
 {
