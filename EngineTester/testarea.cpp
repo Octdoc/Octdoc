@@ -1,6 +1,8 @@
 #include "testarea.h"
 #include <chrono>
 
+#define ELLIPSOID_COLLISION
+
 void TestArea::SetTextureMandelbrot(octdoc::hlp::ModelData::MaterialData::Texture& texture)
 {
 	int textureWidth = 512;
@@ -68,19 +70,30 @@ void TestArea::OnStart(octdoc::gfx::Graphics& graphics)
 	m_lightBuffer = octdoc::gfx::ShaderBuffer::CreateP(graphics, sizeof(float) * 8);
 	octdoc::hlp::ModelLoader loader;
 
+#ifdef ELLIPSOID_COLLISION
 	loader.CreateSphere(octdoc::mth::float3(), 1.0f, 200, 100, octdoc::gfx::ModelType::PN);
+	m_ellipsoid = octdoc::physx::Collider_Ellipsoid::CreateU(octdoc::mth::double3(1));
+#else
+	loader.CreateCube(octdoc::mth::float3(-1.0f, -1.0f, -1.0f), octdoc::mth::float3(2.0f, 2.0f, 2.0f), octdoc::gfx::ModelType::PN);
+	loader.Transform(octdoc::mth::float4x4::Rotation(0.75f, 1.5f, 1.0f));
+	loader.MakeHitboxFromVertices();
+	m_ellipsoid = octdoc::physx::Collider_Mesh::CreateU(loader);
+#endif
 	//loader.Transform(octdoc::mth::float4x4::Scaling(0.75f, 1.5f, 1.0f));
 	m_entity = octdoc::gfx::Entity::CreateP(graphics, loader);
-	m_entity->rotation = octdoc::mth::float3(0.75f, 1.5f, 1.0f);
-	m_entity->scale = octdoc::mth::float3(0.75f, 1.5f, 1.0f);
+	//m_entity->rotation = octdoc::mth::float3(0.75f, 1.5f, 1.0f);
+	//m_entity->scale = octdoc::mth::float3(0.75f, 1.5f, 1.0f);
 	m_entity->MoveUp(5.0f);
 	//m_entity->MoveRight(1.25f);
 	//m_entity->MoveForward(1.25f);
+	m_ellipsoid->position = m_entity->position.WithType<double>();
+	m_ellipsoid->rotation = m_entity->rotation.WithType<double>();
+	m_ellipsoid->scale = m_entity->scale.WithType<double>();
 
 	//loader.CreateQuad(octdoc::mth::float2(-5.0f, -5.0f), octdoc::mth::float2(4.6f, 4.6f), octdoc::gfx::ModelType::PN);
-	//loader.CreateCube(octdoc::mth::float3(-1.0f, -1.0f, -1.0f), octdoc::mth::float3(2.0f, 2.0f, 2.0f), octdoc::gfx::ModelType::PN);
-	loader.LoadModel(L"Media/monkey.omd");
-	loader.Transform(octdoc::mth::float4x4::Scaling(3, 3, 3));
+	loader.CreateCube(octdoc::mth::float3(-1.0f, -1.0f, -1.0f), octdoc::mth::float3(2.0f, 2.0f, 2.0f), octdoc::gfx::ModelType::PN);
+	//loader.LoadModel(L"Media/monkey.omd");
+	//loader.Transform(octdoc::mth::float4x4::Scaling(3, 3, 3));
 	//SetTextureToFile(loader.getTexture(0), L"Media/Arimura_Hinae.gif");
 	//loader.CreateSphere(octdoc::mth::float3(-1.0f, -1.0f, -1.0f), 1.0f, 20, 10, octdoc::gfx::ModelType::PN);
 	//loader.Transform(octdoc::mth::float4x4::Rotation(1.0f, 2.0f, 3.0f));
@@ -90,13 +103,15 @@ void TestArea::OnStart(octdoc::gfx::Graphics& graphics)
 	//m_floor->rotation = octdoc::mth::float3(1, 1.2, 0.3);
 	//m_floor->scale = octdoc::mth::float3(3);
 	loader.MakeHitboxFromVertices();
-	m_square = octdoc::physx::Collider::CreateU(loader);
+	m_square = octdoc::physx::Collider_Mesh::CreateU(loader);
 
 	m_camera.position.z = -5.0f;
 	m_sampler = octdoc::gfx::SamplerState::CreateP(graphics, true, true);
 	m_sampler->SetToPixelShader(graphics);
 
 	m_keyFlags = 0;
+
+	m_fpsTimer.SetMaxFrameCount(100);
 }
 
 void TestArea::OnKeyDown(octdoc::gfx::KeyEvent& e)
@@ -161,8 +176,11 @@ void TestArea::OnMouseMove(octdoc::gfx::MouseMoveEvent& e)
 		m_cameraController.MouseMove(e.dx, e.dy);
 }
 
-void TestArea::OnUpdate(octdoc::gfx::Graphics& graphics, float deltaTime)
+void TestArea::OnUpdate(octdoc::gfx::Graphics& graphics, double deltaTime)
 {
+	m_fpsTimer.Update(deltaTime);
+	graphics.SetWindowTitle(std::to_wstring(m_fpsTimer.GetFPS()).c_str());
+
 	if (deltaTime > 0.02f) deltaTime = 0.02f;
 	octdoc::mth::float4x4 cameraBuffer;
 	m_cameraController.Update(deltaTime);
@@ -198,15 +216,26 @@ void TestArea::OnUpdate(octdoc::gfx::Graphics& graphics, float deltaTime)
 	m_square->rotation = (octdoc::mth::double3)m_floor->rotation;
 	m_square->scale = (octdoc::mth::double3)m_floor->scale;
 	movement = octdoc::mth::double3x3::RotationY(m_camera.rotation.y) * movement;
+
+#ifdef ELLIPSOID_COLLISION
 	for (int i = 0; i < 5; i++)
 	{
 		octdoc::physx::CollisionData collData;
-		bool collide = m_square->CollidesWithEllipsoid(m_entity->WithType<double>(), movement.WithType<double>(), collData);
-		m_entity->Move((octdoc::mth::float3)(movement * (collData.time - 1e-3)));
+		bool collide = m_ellipsoid->Collides(*m_square, movement, octdoc::mth::double3(), collData);
+		m_ellipsoid->Move(movement * (collData.time - 1e-2));
 		if (!collide)
 			break;
 		movement -= collData.normal * collData.normal.Dot(movement);
 	}
+#else
+	octdoc::physx::CollisionData collData;
+	m_square->Collides(*m_ellipsoid, octdoc::mth::double3(), movement, collData);
+	m_ellipsoid->Move(movement * (collData.time - 1e-2));
+#endif
+
+	m_entity->position = m_ellipsoid->position.WithType<float>();
+	m_entity->rotation = m_ellipsoid->rotation.WithType<float>();
+	m_entity->scale = m_ellipsoid->scale.WithType<float>();
 
 	graphics.ClearRenderTarget(0.75f, 0.75f, 0.875f);
 	m_floor->Render(graphics);

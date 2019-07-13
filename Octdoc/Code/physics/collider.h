@@ -4,7 +4,6 @@
 #include "helpers/modelloader.h"
 #include "boundingvolume.h"
 #include "geometry3d.hpp"
-#include <vector>
 
 namespace octdoc
 {
@@ -12,7 +11,6 @@ namespace octdoc
 	{
 		struct CollisionData
 		{
-			//negative time if not colliding
 			double time;
 			mth::double3 normal;
 			mth::double3 point;
@@ -20,29 +18,24 @@ namespace octdoc
 			CollisionData();
 		};
 
+		class Collider_Ellipsoid;
+		class Collider_Mesh;
+
 		class Collider :public mth::Position<double>
 		{
 			SMART_PTR(Collider)
-		private:
-			BV_Cuboid m_aabb;
-			std::vector<mth::double3> m_hitboxVertices;
-			std::vector<unsigned> m_hitboxIndices;
-
-		private:
-			void CalculateAABB();
-			bool BoundingVolumeIntersects(mth::Position<double> ellipsoid, mth::double3 velocity);
-
 		public:
-			Collider(hlp::ModelLoader& loader);
-			Collider(mth::double3 triangles[], int triangleCount);
 			static Collider::U CreateU(hlp::ModelLoader& loader);
-			static Collider::U CreateU(mth::double3 triangles[], int triangleCount);
 			static Collider::P CreateP(hlp::ModelLoader& loader);
-			static Collider::P CreateP(mth::double3 triangles[], int triangleCount);
 
-			inline BV_Cuboid& getBoundingVolume() { return m_aabb; }
-
-			bool CollidesWithEllipsoid(mth::Position<double> ellipsoid, mth::double3 velocity, CollisionData& collisionData);
+			virtual bool Collides(Collider& collider2, mth::double3 v1, mth::double3 v2, CollisionData& collisionData) = 0;
+			virtual bool Collides(Collider_Ellipsoid& collider2, mth::double3 v1, mth::double3 v2, CollisionData& collisionData) = 0;
+			virtual bool Collides(Collider_Mesh& collider2, mth::double3 v1, mth::double3 v2, CollisionData& collisionData) = 0;
 		};
+
+		bool Collides_CC(Collider& c1, mth::double3 v1, Collider& c2, mth::double3 v2, CollisionData& collisionData);
+		bool Collides_EE(Collider_Ellipsoid& c1, mth::double3 v1, Collider_Ellipsoid& c2, mth::double3 v2, CollisionData& collisionData);
+		bool Collides_EM(Collider_Ellipsoid& c1, mth::double3 v1, Collider_Mesh& c2, mth::double3 v2, CollisionData& collisionData);
+		bool Collides_MM(Collider_Mesh& c1, mth::double3 v1, Collider_Mesh& c2, mth::double3 v2, CollisionData& collisionData);
 	}
 }

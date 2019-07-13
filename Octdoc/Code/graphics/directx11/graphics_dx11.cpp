@@ -7,11 +7,11 @@ namespace octdoc
 	{
 		namespace dx11
 		{
-			LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+			static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 			{
 				return ((Graphics_DX11*)GetWindowLongPtr(hwnd, GWLP_USERDATA))->MessageHandler(hwnd, msg, wparam, lparam);
 			}
-			LRESULT CALLBACK InitialWndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+			static LRESULT CALLBACK InitialWndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 			{
 				if (msg == WM_CREATE)
 				{
@@ -251,7 +251,7 @@ namespace octdoc
 							if (m_updateFunction)
 							{
 								auto currentTime = std::chrono::steady_clock::now();
-								m_updateFunction(*this, std::chrono::duration<float>(currentTime - prevTime).count());
+								m_updateFunction(*this, std::chrono::duration<double>(currentTime - prevTime).count());
 								prevTime = currentTime;
 							}
 						}

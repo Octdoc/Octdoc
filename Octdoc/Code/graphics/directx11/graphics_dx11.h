@@ -70,6 +70,7 @@ namespace octdoc
 
 				virtual Input& getInput() override;
 
+				inline HWND getHWND() { return m_hwnd; }
 				inline ID3D11DeviceContext* getContext() { return m_context; }
 				inline ID3D11Device* getDevice() { return m_device; }
 			};

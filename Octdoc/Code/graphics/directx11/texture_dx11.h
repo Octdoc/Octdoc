@@ -44,7 +44,7 @@ namespace octdoc
 			public:
 				Texture_DX11(Graphics_DX11& graphics, void* data, unsigned width, unsigned height, unsigned mipLevels = 0);
 				Texture_DX11(Graphics_DX11& graphics, const wchar_t* filename, unsigned mipLevels = 0);
-				~Texture_DX11();
+				virtual ~Texture_DX11() override;
 				static Texture_DX11::P CreateP(Graphics_DX11& graphics, void* data, unsigned width, unsigned height, unsigned mipLevels = 0);
 				static Texture_DX11::U CreateU(Graphics_DX11& graphics, void* data, unsigned width, unsigned height, unsigned mipLevels = 0);
 				static Texture_DX11::P CreateP(Graphics_DX11& graphics, const wchar_t* filename, unsigned mipLevels = 0);

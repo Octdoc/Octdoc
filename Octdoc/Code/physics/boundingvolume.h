@@ -21,7 +21,7 @@ namespace octdoc
 			{
 				NO_TYPE = 0,
 				CUBOID = 1,
-				SPHERE
+				SPHERE  = 2
 			};
 
 		public:

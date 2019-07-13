@@ -11,7 +11,7 @@ namespace octdoc
 		public:
 			void Register(Graphics& graphics, Input& input);
 			virtual void OnStart(Graphics& graphics) {}
-			virtual void OnUpdate(Graphics& graphics, float deltaTime) {}
+			virtual void OnUpdate(Graphics& graphics, double deltaTime) {}
 			virtual void OnMouseMove(MouseMoveEvent& e) {}
 			virtual void OnMouseLBtnDown(MouseButtonEvent& e) {}
 			virtual void OnMouseLBtnUp(MouseButtonEvent& e) {}

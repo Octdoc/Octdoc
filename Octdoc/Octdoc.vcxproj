@@ -219,11 +219,17 @@
     <ClCompile Include="Code\graphics\vertexshader.cpp" />
     <ClCompile Include="Code\helpers\fileloaders.cpp" />
     <ClCompile Include="Code\helpers\firstpersoncontroller.cpp" />
+    <ClCompile Include="Code\helpers\fpstimer.cpp" />
     <ClCompile Include="Code\helpers\helpers.cpp" />
     <ClCompile Include="Code\helpers\modelloader.cpp" />
     <ClCompile Include="Code\helpers\omdloader.cpp" />
     <ClCompile Include="Code\physics\boundingvolume.cpp" />
     <ClCompile Include="Code\physics\collider.cpp" />
+    <ClCompile Include="Code\physics\colliderellipsoid.cpp" />
+    <ClCompile Include="Code\physics\collidermesh.cpp" />
+    <ClCompile Include="Code\physics\collidesmeshellipsoid.cpp" />
+    <ClCompile Include="Code\physics\collidesmeshmesh.cpp" />
+    <ClCompile Include="Code\physics\physicsobject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\graphics\application.h" />
@@ -255,11 +261,17 @@
     <ClInclude Include="Code\graphics\vertexshader.h" />
     <ClInclude Include="Code\helpers\fileloaders.h" />
     <ClInclude Include="Code\helpers\firstpersoncontroller.h" />
+    <ClInclude Include="Code\helpers\fpstimer.h" />
     <ClInclude Include="Code\helpers\helpers.h" />
     <ClInclude Include="Code\helpers\modelloader.h" />
     <ClInclude Include="Code\helpers\omdloader.h" />
     <ClInclude Include="Code\physics\boundingvolume.h" />
     <ClInclude Include="Code\physics\collider.h" />
+    <ClInclude Include="Code\physics\colliderellipsoid.h" />
+    <ClInclude Include="Code\physics\collidermesh.h" />
+    <ClInclude Include="Code\physics\collidesmeshellipsoid.h" />
+    <ClInclude Include="Code\physics\collidesmeshmesh.h" />
+    <ClInclude Include="Code\physics\physicsobject.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

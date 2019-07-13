@@ -5,7 +5,9 @@
 #include "graphics/camera.h"
 #include "graphics/samplerstate.h"
 #include "helpers/firstpersoncontroller.h"
-#include "physics/collider.h"
+#include "physics/colliderellipsoid.h"
+#include "physics/collidermesh.h"
+#include"helpers/fpstimer.h"
 
 class TestArea : public octdoc::gfx::Application
 {
@@ -17,8 +19,10 @@ class TestArea : public octdoc::gfx::Application
 	octdoc::gfx::SamplerState::P m_sampler;
 	octdoc::gfx::Entity::P m_entity;
 	octdoc::gfx::Entity::P m_floor;
+	octdoc::physx::Collider::U m_ellipsoid;
 	octdoc::physx::Collider::U m_square;
 	//octdoc::gfx::Entity::P m_cube;
+	octdoc::hlp::FPSTimer m_fpsTimer;
 	char m_keyFlags;
 
 private:
@@ -31,5 +35,5 @@ public:
 	virtual void OnKeyDown(octdoc::gfx::KeyEvent& e) override;
 	virtual void OnKeyUp(octdoc::gfx::KeyEvent& e) override;
 	virtual void OnMouseMove(octdoc::gfx::MouseMoveEvent& e) override;
-	virtual void OnUpdate(octdoc::gfx::Graphics& graphics, float deltaTime) override;
+	virtual void OnUpdate(octdoc::gfx::Graphics& graphics, double deltaTime) override;
 };

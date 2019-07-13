@@ -94,7 +94,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)..\OctdocMath\OctdocMath;$(SolutionDir)Octdoc/Code</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>$(SolutionDir)\Bin\$(Platform)\$(Configuration)\Octdoc;$(SolutionDir)..\OctdocMath\Bin\$(Platform)\$(Configuration)\OctdocMath;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>

@@ -27,6 +27,8 @@ namespace octdoc
 			m_filename = filename;
 			DisassemblePath(filename, &m_foldername, nullptr, nullptr);
 			std::ifstream infile(m_filename);
+			if (!infile.is_open())
+				throw std::exception(ToString((L"Failed to open file: " + m_filename).c_str()).c_str());
 			char ch;
 			infile.read(&ch, 1);
 			infile.close();

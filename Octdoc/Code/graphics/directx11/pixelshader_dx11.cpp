@@ -52,14 +52,15 @@ struct PixelInputType{";
 				shaderCode += ModelType::HasTexture(modelType) ? "tex.Sample(ss,input.tex);" : "entityColor;";
 				if (ModelType::HasNormals(modelType))
 				{
+					shaderCode += "float3 normal = normalize(input.normal);";
 					if (ModelType::HasNormalmap(modelType))
 						shaderCode += "float4 bumpMap=normalmap.Sample(ss,input.tex)*2-1;\
 input.tangent=normalize(input.tangent-dot(input.tangent,input.normal)*input.normal);\
 float3 bitangent=cross(input.tangent,input.normal);\
-float3x3 texSpace=float3x3(input.tangent,bitangent,input.normal);\
-input.normal=normalize(mul(bumpMap,texSpace));";
+float3x3 texSpace=float3x3(input.tangent,bitangent,normal);\
+normal=normalize(mul(bumpMap,texSpace));";
 					shaderCode += "float3 lightDirection=normalize(lightPosition-input.pos);\
-float intensity=saturate(dot(input.normal,lightDirection));\
+float intensity=saturate(dot(normal,lightDirection));\
 intensity=ambient+(1-ambient)*intensity;\
 color.xyz*=lightColor.xyz*intensity;";
 				}

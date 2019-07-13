@@ -58,7 +58,7 @@ namespace octdoc
 
 		class ModelLoader
 		{
-		private:
+		protected:
 			ModelData m_data;
 			std::wstring m_folderName;
 			std::wstring m_bareFileName;
@@ -78,7 +78,7 @@ namespace octdoc
 		public:
 			ModelLoader();
 			ModelLoader(const wchar_t* filename);
-			void LoadModel(const wchar_t* filename);
+			virtual void LoadModel(const wchar_t* filename);
 			void Clear();
 
 			void CreateSphere(mth::float3 centre, float radius, int longitudes, int latitudes, unsigned modelType);

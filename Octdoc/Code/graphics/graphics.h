@@ -30,7 +30,7 @@ namespace octdoc
 		protected:
 			GraphicsSettings m_settings;
 			std::function<void(Graphics&)> m_startFunction;
-			std::function<void(Graphics&, float)> m_updateFunction;
+			std::function<void(Graphics&, double)> m_updateFunction;
 
 		public:
 			static Graphics::P CreateP(GraphicsSettings& settings);

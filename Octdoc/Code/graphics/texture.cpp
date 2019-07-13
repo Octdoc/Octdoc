@@ -5,6 +5,7 @@ namespace octdoc
 	namespace gfx
 	{
 		Texture::Texture() :m_width(0), m_height(0) {}
+		Texture::~Texture() {}
 		Texture::P Texture::CreateP(Graphics& graphics, void* data, unsigned width, unsigned height, unsigned mipLevels)
 		{
 			switch (graphics.getGfxEngine())

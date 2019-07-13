@@ -37,6 +37,9 @@
     <Filter Include="Source Files\physics">
       <UniqueIdentifier>{2b3fca41-ad2b-4849-b7f1-3b9e03eb544a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\form">
+      <UniqueIdentifier>{67b4a095-7158-4dff-bee6-7ab5d9e6c0d1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\graphics\graphics.cpp">
@@ -138,13 +141,28 @@
     <ClCompile Include="Code\graphics\directx11\wicimageloader.cpp">
       <Filter>Source Files\graphics\directx11</Filter>
     </ClCompile>
+    <ClCompile Include="Code\physics\physicsobject.cpp">
+      <Filter>Source Files\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\physics\colliderellipsoid.cpp">
+      <Filter>Source Files\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\physics\collidermesh.cpp">
+      <Filter>Source Files\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\physics\collidesmeshellipsoid.cpp">
+      <Filter>Source Files\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\physics\collidesmeshmesh.cpp">
+      <Filter>Source Files\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\helpers\fpstimer.cpp">
+      <Filter>Source Files\helpers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\graphics\directx11\graphics_dx11.h">
       <Filter>Header Files\graphics\directx11</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\graphics\graphics.h">
-      <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="Code\graphics\directx11\comptr.h">
       <Filter>Header Files\graphics\directx11</Filter>
@@ -241,6 +259,27 @@
     </ClInclude>
     <ClInclude Include="Code\graphics\directx11\wicimageloader.h">
       <Filter>Header Files\graphics\directx11</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\physics\physicsobject.h">
+      <Filter>Header Files\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\physics\collidermesh.h">
+      <Filter>Header Files\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\physics\colliderellipsoid.h">
+      <Filter>Header Files\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\physics\collidesmeshellipsoid.h">
+      <Filter>Header Files\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\physics\collidesmeshmesh.h">
+      <Filter>Header Files\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\helpers\fpstimer.h">
+      <Filter>Header Files\helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\graphics.h">
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
