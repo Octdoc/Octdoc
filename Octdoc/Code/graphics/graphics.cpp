@@ -8,6 +8,7 @@ namespace octdoc
 			windowName(L"Octdoc"),
 			width(1280),
 			height(720),
+			resizeable(false),
 			fullScreen(false),
 			vsyncEnable(true),
 			antiAliasing(true), 

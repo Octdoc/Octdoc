@@ -3,11 +3,11 @@
 #include <sstream>
 
 #pragma comment (lib, "Octdoc.lib")
-#pragma comment (lib, "OctdocMath.lib")
 
 int Main(std::vector<std::wstring>& args)
 {
 	octdoc::gfx::GraphicsSettings settings;
+	settings.resizeable = true;
 	octdoc::gfx::Graphics::U graphics = octdoc::gfx::Graphics::CreateU(settings);
 	TestArea().Register(*graphics, graphics->getInput());
 	graphics->Run();

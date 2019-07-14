@@ -11,6 +11,7 @@ namespace octdoc
 		struct MouseButtonEvent;
 		struct MouseWheelEvent;
 		struct KeyEvent;
+		struct ResizeEvent;
 
 		class Input
 		{
@@ -207,6 +208,7 @@ namespace octdoc
 			std::function<void(MouseWheelEvent& e)> m_mouseWheelEvent;
 			std::function<void(KeyEvent& e)> m_keyDownEvent;
 			std::function<void(KeyEvent& e)> m_keyUpEvent;
+			std::function<void(ResizeEvent& e)> m_resizeEvent;
 
 		public:
 			Input();
@@ -224,6 +226,7 @@ namespace octdoc
 			inline void setMouseWheelEvent(std::function<void(MouseWheelEvent&)> e) { m_mouseWheelEvent = e; }
 			inline void setKeyDownEvent(std::function<void(KeyEvent&)> e) { m_keyDownEvent = e; }
 			inline void setKeyUpEvent(std::function<void(KeyEvent&)> e) { m_keyUpEvent = e; }
+			inline void setResizeEvent(std::function<void(ResizeEvent&)> e) { m_resizeEvent = e; }
 
 		};
 
@@ -270,6 +273,13 @@ namespace octdoc
 
 			KeyEvent(Input& input, Input::KeyCode keyCode,
 				bool ctrlPressed, bool altPressed, bool shiftPressed);
+		};
+		struct ResizeEvent
+		{
+			Input& input;
+			int width, height;
+
+			ResizeEvent(Input& input, int width, int height);
 		};
 
 		/*class Event {};

@@ -29,6 +29,8 @@ namespace octdoc
 				COM_Ptr<ID3D11RenderTargetView> m_renderTargetView;
 				COM_Ptr<ID3D11Texture2D> m_depthBuffer;
 				COM_Ptr<ID3D11DepthStencilView> m_depthStencilView;
+				COM_Ptr<ID3D11DepthStencilState> m_depthStencilState_ZEnabled;
+				COM_Ptr<ID3D11DepthStencilState> m_depthStencilState_ZDisabled;
 				COM_Ptr<ID3D11RasterizerState> m_rasterizerWireframe;
 				COM_Ptr<ID3D11RasterizerState> m_rasterizerSolid;
 				COM_Ptr<ID3D11BlendState> m_blendState_alphaOn;
@@ -43,14 +45,19 @@ namespace octdoc
 				void SetViewPort();
 				void CreateRasterizerStates();
 				void CreateBlendStates();
+				void InitGraphics();
 
 			public:
-				void Init(GraphicsSettings& settings);
+				Graphics_DX11(GraphicsSettings& settings);
+				Graphics_DX11(GraphicsSettings& settings, HWND parentWindow);
 				LRESULT MessageHandler(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
+				virtual void Resize(int width, int height) override;
 				virtual void Run() override;
 				static Graphics_DX11::P CreateP(GraphicsSettings& settings);
 				static Graphics_DX11::U CreateU(GraphicsSettings& settings);
+				static Graphics_DX11::P CreateP(GraphicsSettings& settings, HWND parentWindow);
+				static Graphics_DX11::U CreateU(GraphicsSettings& settings, HWND parentWindow);
 
 				virtual void SetScreenAsRenderTarget() override;
 				virtual void ClearRenderTarget() override;
@@ -59,7 +66,7 @@ namespace octdoc
 				virtual void Present() override;
 
 				virtual void EnableAlphaBlending(bool blend) override;
-				//virtual void EnableZBuffer(bool enable) override;
+				virtual void EnableZBuffer(bool enable) override;
 				virtual void SetPrimitiveTopology_Points() override;
 				virtual void SetPrimitiveTopology_Lines() override;
 				virtual void SetPrimitiveTopology_Triangles() override;

@@ -133,7 +133,7 @@
       <ObjectFileOutput>$(ProjectDir)Shaders/%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\OctdocMath\Bin\$(Platform)\$(Configuration)\OctdocMath;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -234,12 +234,12 @@
   <ItemGroup>
     <ClInclude Include="Code\graphics\application.h" />
     <ClInclude Include="Code\graphics\camera.h" />
+    <ClInclude Include="Code\graphics\directx11\input_dx11.h" />
     <ClInclude Include="Code\graphics\directx11\rendertargettexture_dx11.h" />
     <ClInclude Include="Code\graphics\directx11\samplerstate_dx11.h" />
     <ClInclude Include="Code\graphics\directx11\shaderbuffer_dx11.h" />
     <ClInclude Include="Code\graphics\directx11\comptr.h" />
     <ClInclude Include="Code\graphics\directx11\graphics_dx11.h" />
-    <ClInclude Include="Code\graphics\directx11\input_dx11.h" />
     <ClInclude Include="Code\graphics\directx11\model_dx11.h" />
     <ClInclude Include="Code\graphics\directx11\pixelshader_dx11.h" />
     <ClInclude Include="Code\graphics\directx11\shaderbase_dx11.h" />

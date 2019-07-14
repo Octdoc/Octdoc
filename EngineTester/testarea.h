@@ -36,4 +36,5 @@ public:
 	virtual void OnKeyUp(octdoc::gfx::KeyEvent& e) override;
 	virtual void OnMouseMove(octdoc::gfx::MouseMoveEvent& e) override;
 	virtual void OnUpdate(octdoc::gfx::Graphics& graphics, double deltaTime) override;
+	virtual void OnResize(octdoc::gfx::ResizeEvent& e) override;
 };

@@ -54,6 +54,9 @@ namespace octdoc
 			altPressed(altPressed),
 			shiftPressed(shiftPressed) {}
 
+		ResizeEvent::ResizeEvent(Input& input, int width, int height) :
+			input(input), width(width), height(height) {}
+
 		/*InputEvent::InputEvent(Input& input) :m_input(input) {}
 		bool InputEvent::isCtrlPressed()
 		{
@@ -89,6 +92,5 @@ namespace octdoc
 			KeyEvent(input) {}
 		KeyUpEvent::KeyUpEvent(Input& input) :
 			KeyEvent(input) {}*/
-
 	}
 }

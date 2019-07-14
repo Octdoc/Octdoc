@@ -23,21 +23,23 @@ namespace octdoc
 				return DefWindowProc(hwnd, msg, wparam, lparam);
 			}
 
-			void Graphics_DX11::Init(GraphicsSettings& settings)
+			Graphics_DX11::Graphics_DX11(GraphicsSettings& settings)
 			{
 				m_settings = settings;
 				CreateGraphicsWindow();
-				CreateDevice();
-				CreateSwapChain();
-				CreateRenderTarget();
-				SetViewPort();
-				CreateRasterizerStates();
-				CreateBlendStates();
+				InitGraphics();
+			}
+			Graphics_DX11::Graphics_DX11(GraphicsSettings& settings, HWND parentWindow)
+			{
+				m_settings = settings;
+				m_hwnd = parentWindow;
+				InitGraphics();
 			}
 			void Graphics_DX11::CreateGraphicsWindow()
 			{
 				WNDCLASSEX wc{};
 				wc.cbSize = sizeof(wc);
+				wc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
 				wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 				wc.hInstance = GetModuleHandle(NULL);
 				wc.lpfnWndProc = InitialWndProc;
@@ -48,7 +50,7 @@ namespace octdoc
 				rect.top = (GetSystemMetrics(SM_CYSCREEN) - m_settings.height) / 2;
 				rect.right = rect.left + m_settings.width;
 				rect.bottom = rect.top + m_settings.height;
-				DWORD style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
+				DWORD style = m_settings.resizeable ? WS_OVERLAPPEDWINDOW : (WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX);
 				DWORD exStyle = WS_EX_OVERLAPPEDWINDOW;
 				AdjustWindowRectEx(&rect, style, FALSE, exStyle);
 				m_hwnd = CreateWindowEx(exStyle, m_settings.windowName.c_str(), m_settings.windowName.c_str(), style,
@@ -125,7 +127,7 @@ namespace octdoc
 			{
 				COM_Ptr<ID3D11Texture2D> backBuffer;
 				HRESULT hr;
-				hr = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer));
+				hr = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), backBuffer.AddressAs<void>());
 				if (FAILED(hr))
 					throw std::exception("Failed to get back buffer");
 				hr = m_device->CreateRenderTargetView(backBuffer, nullptr, &m_renderTargetView);
@@ -162,7 +164,33 @@ namespace octdoc
 				if (FAILED(hr))
 					throw std::exception("Failed to create depth stencil view");
 
+				D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
+				depthStencilDesc.DepthEnable = true;
+				depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+				depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+				depthStencilDesc.StencilEnable = true;
+				depthStencilDesc.StencilReadMask = 0xFF;
+				depthStencilDesc.StencilWriteMask = 0xFF;
+				depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+				depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+				depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+				depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+				depthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+				depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+				depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+				depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+				depthStencilDesc.DepthEnable = true;
+				hr = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState_ZEnabled);
+				if (FAILED(hr))
+					throw std::exception("Failed to create depth stencil state.");
+				depthStencilDesc.DepthEnable = false;
+				hr = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState_ZDisabled);
+				if (FAILED(hr))
+					throw std::exception("Failed to create depth stencil state.");
+
 				m_context->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
+				m_context->OMSetDepthStencilState(m_depthStencilState_ZEnabled, 0);
 			}
 			void Graphics_DX11::SetViewPort()
 			{
@@ -226,10 +254,35 @@ namespace octdoc
 
 				EnableAlphaBlending(true);
 			}
-			
+			void Graphics_DX11::InitGraphics()
+			{
+				CreateDevice();
+				CreateSwapChain();
+				CreateRenderTarget();
+				SetViewPort();
+				CreateRasterizerStates();
+				CreateBlendStates();
+			}			
 			LRESULT Graphics_DX11::MessageHandler(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 			{
 				return m_input.HandleMessage(hwnd, msg, wparam, lparam);
+			}
+			void Graphics_DX11::Resize(int width, int height)
+			{
+				if (width != m_settings.width || height != m_settings.height)
+				{
+					m_settings.width = width;
+					m_settings.height = height;
+					m_swapChain.Release();
+					m_renderTargetView.Release();
+					m_depthBuffer.Release();
+					m_depthStencilView.Release();
+					m_depthStencilState_ZDisabled.Release();
+					m_depthStencilState_ZEnabled.Release();
+					CreateSwapChain();
+					CreateRenderTarget();
+					SetViewPort();
+				}
 			}
 			void Graphics_DX11::Run()
 			{
@@ -264,15 +317,19 @@ namespace octdoc
 			}
 			Graphics_DX11::P Graphics_DX11::CreateP(GraphicsSettings& settings)
 			{
-				Graphics_DX11::P gfx = std::make_shared<Graphics_DX11>();
-				gfx->Init(settings);
-				return gfx;
+				return std::make_shared<Graphics_DX11>(settings);
 			}
 			Graphics_DX11::U Graphics_DX11::CreateU(GraphicsSettings& settings)
 			{
-				Graphics_DX11::U gfx = std::make_unique<Graphics_DX11>();
-				gfx->Init(settings);
-				return gfx;
+				return std::make_unique<Graphics_DX11>(settings);
+			}
+			Graphics_DX11::P Graphics_DX11::CreateP(GraphicsSettings& settings, HWND parentWindow)
+			{
+				return std::make_shared<Graphics_DX11>(settings, parentWindow);
+			}
+			Graphics_DX11::U Graphics_DX11::CreateU(GraphicsSettings& settings, HWND parentWindow)
+			{
+				return std::make_unique<Graphics_DX11>(settings, parentWindow);
 			}
 			void Graphics_DX11::SetScreenAsRenderTarget()
 			{
@@ -302,6 +359,10 @@ namespace octdoc
 			{
 				float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
 				m_context->OMSetBlendState(blend ? m_blendState_alphaOn : m_blendState_alphaOff, blendFactor, 0xffffffff);
+			}
+			void Graphics_DX11::EnableZBuffer(bool enable)
+			{
+				m_context->OMSetDepthStencilState(enable ? m_depthStencilState_ZEnabled : m_depthStencilState_ZDisabled, 0);
 			}
 			void Graphics_DX11::SetPrimitiveTopology_Points()
 			{

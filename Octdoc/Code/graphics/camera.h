@@ -20,7 +20,7 @@ namespace octdoc
 
 		public:
 			Camera(float screenAspect = 16.0f / 9.0f, float fov = mth::PI / 4.0f, float screenNear = 0.1f, float screenDepth = 1000.0f);
-
+			inline static float ToScreenAspect(int width, int height) { return float(width) / float(height); }
 			void SetFOV(float fov);
 			float getFOV();
 			void SetScreenAspect(float screenAspect);

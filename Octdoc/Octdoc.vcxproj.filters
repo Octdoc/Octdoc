@@ -37,9 +37,6 @@
     <Filter Include="Source Files\physics">
       <UniqueIdentifier>{2b3fca41-ad2b-4849-b7f1-3b9e03eb544a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\form">
-      <UniqueIdentifier>{67b4a095-7158-4dff-bee6-7ab5d9e6c0d1}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\graphics\graphics.cpp">
@@ -48,13 +45,7 @@
     <ClCompile Include="Code\graphics\directx11\graphics_dx11.cpp">
       <Filter>Source Files\graphics\directx11</Filter>
     </ClCompile>
-    <ClCompile Include="Code\graphics\directx11\input_dx11.cpp">
-      <Filter>Source Files\graphics\directx11</Filter>
-    </ClCompile>
     <ClCompile Include="Code\graphics\modeltype.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\graphics\input.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="Code\graphics\model.cpp">
@@ -159,18 +150,18 @@
     <ClCompile Include="Code\helpers\fpstimer.cpp">
       <Filter>Source Files\helpers</Filter>
     </ClCompile>
+    <ClCompile Include="Code\graphics\input.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\graphics\directx11\input_dx11.cpp">
+      <Filter>Source Files\graphics\directx11</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\graphics\directx11\graphics_dx11.h">
       <Filter>Header Files\graphics\directx11</Filter>
     </ClInclude>
     <ClInclude Include="Code\graphics\directx11\comptr.h">
-      <Filter>Header Files\graphics\directx11</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\graphics\input.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\graphics\directx11\input_dx11.h">
       <Filter>Header Files\graphics\directx11</Filter>
     </ClInclude>
     <ClInclude Include="Code\graphics\model.h">
@@ -279,6 +270,12 @@
       <Filter>Header Files\helpers</Filter>
     </ClInclude>
     <ClInclude Include="Code\graphics\graphics.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\directx11\input_dx11.h">
+      <Filter>Header Files\graphics\directx11</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\input.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
   </ItemGroup>

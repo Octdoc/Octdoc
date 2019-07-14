@@ -1,6 +1,6 @@
 #pragma once
 
-#include "input.h"
+#include "graphics/input.h"
 #include <string>
 
 namespace octdoc
@@ -14,6 +14,7 @@ namespace octdoc
 			std::wstring windowName;
 			int width;
 			int height;
+			bool resizeable;
 			bool fullScreen;
 			bool vsyncEnable;
 			bool antiAliasing;
@@ -36,6 +37,7 @@ namespace octdoc
 			static Graphics::P CreateP(GraphicsSettings& settings);
 			static Graphics::U CreateU(GraphicsSettings& settings);
 
+			virtual void Resize(int width, int height) = 0;
 			virtual void Run() = 0;
 			virtual void SetScreenAsRenderTarget() = 0;
 			virtual void ClearRenderTarget() = 0;
@@ -44,7 +46,7 @@ namespace octdoc
 			virtual void Present() = 0;
 
 			virtual void EnableAlphaBlending(bool blend) = 0;
-			//virtual void EnableZBuffer(bool enable) = 0;
+			virtual void EnableZBuffer(bool enable) = 0;
 			virtual void SetPrimitiveTopology_Points() = 0;
 			virtual void SetPrimitiveTopology_Lines() = 0;
 			virtual void SetPrimitiveTopology_Triangles() = 0;
@@ -54,7 +56,7 @@ namespace octdoc
 			virtual void SetWindowTitle(const wchar_t *title) = 0;
 			virtual void Quit() = 0;
 
-			virtual Input& getInput() = 0;
+			virtual gfx::Input& getInput() = 0;
 
 			inline void setStartFunction(std::function<void(Graphics& graphics)> fn) { m_startFunction = fn; }
 			inline void setUpdateFunction(std::function<void(Graphics& graphics, float deltaTime)> fn) { m_updateFunction = fn; }

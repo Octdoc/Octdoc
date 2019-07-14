@@ -242,3 +242,9 @@ void TestArea::OnUpdate(octdoc::gfx::Graphics& graphics, double deltaTime)
 	m_entity->Render(graphics);
 	graphics.Present();
 }
+
+void TestArea::OnResize(octdoc::gfx::ResizeEvent& e)
+{
+	m_gfx->Resize(e.width, e.height);
+	m_camera.SetScreenAspect(octdoc::gfx::Camera::ToScreenAspect(e.width, e.height));
+}

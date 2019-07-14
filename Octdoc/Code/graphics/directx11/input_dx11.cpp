@@ -45,11 +45,15 @@ namespace octdoc
 			}
 			inline KeyEvent CreateKeyEvent(Input& input, WPARAM wparam)
 			{
-				return KeyEvent(input, 
-					(Input::KeyCode)wparam, 
+				return KeyEvent(input,
+					(Input::KeyCode)wparam,
 					input.isPressed(Input::KeyCode::KEY_CONTROL),
-					input.isPressed(Input::KeyCode::KEY_MENU), 
+					input.isPressed(Input::KeyCode::KEY_MENU),
 					input.isPressed(Input::KeyCode::KEY_SHIFT));
+			}
+			inline ResizeEvent CreateResizeEvent(Input& input, LPARAM lparam)
+			{
+				return ResizeEvent(input, LOWORD(lparam), HIWORD(lparam));
 			}
 
 			void Input_DX11::SetMousePosition(LPARAM lparam)
@@ -142,6 +146,14 @@ namespace octdoc
 					m_keyUpEvent(e);
 				}
 			}
+			void Input_DX11::Resize(LPARAM lparam)
+			{
+				if (m_resizeEvent)
+				{
+					ResizeEvent e = CreateResizeEvent(*this, lparam);
+					m_resizeEvent(e);
+				}
+			}
 			LRESULT Input_DX11::HandleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 			{
 				switch (msg)
@@ -175,6 +187,13 @@ namespace octdoc
 					return 0;
 				case WM_KEYUP:
 					KeyUp(wparam);
+					return 0;
+				case WM_SIZE:
+					Resize(lparam);
+					return 0;
+				case WM_GETMINMAXINFO:
+					((MINMAXINFO*)lparam)->ptMinTrackSize.x = 320;
+					((MINMAXINFO*)lparam)->ptMinTrackSize.y = 180;
 					return 0;
 				case WM_DESTROY:
 					PostQuitMessage(0);
