@@ -26,7 +26,7 @@ namespace octdoc
 				return shaderCode;
 			}
 
-			COM_Ptr<ID3DBlob> CompileShader(std::string& shaderCode, const char* entry, const char* target, const wchar_t* errorOutputFile)
+			COM_Ptr<ID3DBlob> CompileShader(const std::string& shaderCode, const char* entry, const char* target, const wchar_t* errorOutputFile)
 			{
 				COM_Ptr<ID3DBlob> shaderBuffer;
 				COM_Ptr<ID3DBlob> errorMessage;

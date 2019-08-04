@@ -135,13 +135,18 @@ namespace octdoc
 			{
 				auto frame = LoadFrame(index);
 				auto converter = GetConverter(frame);
-				auto metadata = GetMetadataReader(frame);
 				unsigned width = max(m_width >> index, 1);
 				unsigned height = max(m_height >> index, 1);
 				m_frames[index].frame.resize(width * height * 4);
 				HRESULT hr = converter->CopyPixels(nullptr, 4 * width, m_frames[index].frame.size(), m_frames[index].frame.data());
 				if (FAILED(hr))
-					throw std::exception("Failed to copy pixel data");
+				{
+					m_hasMips = false;
+					m_frames.resize(1);
+					m_frameCount = 1;
+
+					//throw std::exception("Failed to copy pixel data");
+				}
 			}
 
 			WICImageLoader::WICImageLoader(const wchar_t* filename) :m_filename(filename)

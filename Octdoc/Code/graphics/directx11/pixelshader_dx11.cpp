@@ -7,17 +7,30 @@ namespace octdoc
 	{
 		namespace dx11
 		{
-			std::map<std::wstring, PixelShader_DX11::W> PixelShader_DX11::m_loadedShaders;
+			hlp::LoadOnceContainer<PixelShader_DX11> PixelShader_DX11::m_loadedShaders;
 			void PixelShader_DX11::ClearReleasedShaders()
 			{
-				for (auto shader : m_loadedShaders)
+				m_loadedShaders.Cleanup();
+			}
+			COM_Ptr<ID3DBlob> PixelShader_DX11::CompilePixelShader(Graphics_DX11& graphics, std::string& shaderCode)
+			{
+				const char* target = nullptr;
+				switch (graphics.getFeatureLevel())
 				{
-					if (shader.second.expired())
-					{
-						m_loadedShaders.erase(shader.first);
-						return;
-					}
+				case D3D_FEATURE_LEVEL_10_0:
+					target = "ps_4_0";
+					break;
+				case D3D_FEATURE_LEVEL_10_1:
+					target = "ps_4_1";
+					break;
+				case D3D_FEATURE_LEVEL_11_0:
+				case D3D_FEATURE_LEVEL_11_1:
+					target = "ps_5_0";
+					break;
+				default:
+					target = "ps_4_0";
 				}
+				return CompileShader(shaderCode, "main", target, L"shadererror.txt");
 			}
 			void PixelShader_DX11::CreatePixelShader(Graphics_DX11& graphics, ID3DBlob* shaderBuffer)
 			{
@@ -62,11 +75,17 @@ normal=normalize(mul(bumpMap,texSpace));";
 					shaderCode += "float3 lightDirection=normalize(lightPosition-input.pos);\
 float intensity=saturate(dot(normal,lightDirection));\
 intensity=ambient+(1-ambient)*intensity;\
-color.xyz*=lightColor.xyz*intensity;";
+color.xyz*=intensity;";
 				}
-				shaderCode += "return color;}";
+				shaderCode += "return color*lightColor;}";
 
-				COM_Ptr<ID3DBlob> shaderBuffer = CompileShader(shaderCode, "main", "ps_5_0", L"shadererror.txt");
+				COM_Ptr<ID3DBlob> shaderBuffer = CompilePixelShader(graphics, shaderCode);
+				CreatePixelShader(graphics, shaderBuffer);
+			}
+			PixelShader_DX11::PixelShader_DX11(Graphics_DX11& graphics, const char* shaderCode)
+			{
+				std::string code(shaderCode);
+				COM_Ptr<ID3DBlob> shaderBuffer = CompilePixelShader(graphics, code);
 				CreatePixelShader(graphics, shaderBuffer);
 			}
 			PixelShader_DX11::~PixelShader_DX11()
@@ -75,7 +94,13 @@ color.xyz*=lightColor.xyz*intensity;";
 			}
 			PixelShader_DX11::P PixelShader_DX11::CreateP(Graphics_DX11& graphics, const wchar_t* shaderFileName)
 			{
-				return std::make_shared<PixelShader_DX11>(graphics, shaderFileName);
+				PixelShader_DX11::P ps = m_loadedShaders.Find(shaderFileName);
+				if (ps == nullptr)
+				{
+					ps = std::make_shared<PixelShader_DX11>(graphics, shaderFileName);
+					m_loadedShaders.Add(shaderFileName, ps);
+				}
+				return ps;
 			}
 			PixelShader_DX11::U PixelShader_DX11::CreateU(Graphics_DX11& graphics, const wchar_t* shaderFileName)
 			{
@@ -88,6 +113,14 @@ color.xyz*=lightColor.xyz*intensity;";
 			PixelShader_DX11::U PixelShader_DX11::CreateU(Graphics_DX11& graphics, unsigned modelType)
 			{
 				return std::make_unique<PixelShader_DX11>(graphics, modelType);
+			}
+			PixelShader_DX11::P PixelShader_DX11::CreatePFromString(Graphics_DX11& graphics, const char* shaderCode)
+			{
+				return std::make_shared<PixelShader_DX11>(graphics, shaderCode);
+			}
+			PixelShader_DX11::U PixelShader_DX11::CreateUFromString(Graphics_DX11& graphics, const char* shaderCode)
+			{
+				return std::make_unique<PixelShader_DX11>(graphics, shaderCode);
 			}
 			void PixelShader_DX11::SetShaderToRender(Graphics& graphics)
 			{

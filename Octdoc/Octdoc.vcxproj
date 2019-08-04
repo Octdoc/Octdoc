@@ -214,6 +214,7 @@
     <ClCompile Include="Code\graphics\pixelshader.cpp" />
     <ClCompile Include="Code\graphics\rendertargettexture.cpp" />
     <ClCompile Include="Code\graphics\samplerstate.cpp" />
+    <ClCompile Include="Code\graphics\scene\scene.cpp" />
     <ClCompile Include="Code\graphics\shaderbuffer.cpp" />
     <ClCompile Include="Code\graphics\texture.cpp" />
     <ClCompile Include="Code\graphics\vertexshader.cpp" />
@@ -256,6 +257,7 @@
     <ClInclude Include="Code\graphics\pixelshader.h" />
     <ClInclude Include="Code\graphics\rendertargettexture.h" />
     <ClInclude Include="Code\graphics\samplerstate.h" />
+    <ClInclude Include="Code\graphics\scene\scene.h" />
     <ClInclude Include="Code\graphics\shaderbuffer.h" />
     <ClInclude Include="Code\graphics\texture.h" />
     <ClInclude Include="Code\graphics\vertexshader.h" />
@@ -265,6 +267,8 @@
     <ClInclude Include="Code\helpers\helpers.h" />
     <ClInclude Include="Code\helpers\modelloader.h" />
     <ClInclude Include="Code\helpers\omdloader.h" />
+    <ClInclude Include="Code\helpers\loadoncecontainer.h" />
+    <ClInclude Include="Code\octdoc.h" />
     <ClInclude Include="Code\physics\boundingvolume.h" />
     <ClInclude Include="Code\physics\collider.h" />
     <ClInclude Include="Code\physics\colliderellipsoid.h" />

@@ -3,9 +3,7 @@
 #include "graphics/texture.h"
 #include "wicimageloader.h"
 #include <chrono>
-#include <map>
-#include <string>
-
+#include "helpers/loadoncecontainer.h"
 
 namespace octdoc
 {
@@ -15,9 +13,9 @@ namespace octdoc
 		{
 			class Texture_DX11 :public Texture
 			{
-				SMART_PTR(Texture)
+				SMART_PTR(Texture_DX11)
 			private:
-				static std::map<std::wstring, Texture_DX11::W> m_loadedTextures;
+				static hlp::LoadOnceContainer<Texture_DX11> m_loadedTextures;
 				static void ClearReleasedTextures();
 
 			private:

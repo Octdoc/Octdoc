@@ -8,17 +8,10 @@ namespace octdoc
 		namespace dx11
 		{
 			Texture_DX11::Frame::Frame() :shaderResourceView(), frameTime(0.0f) {}
-			std::map<std::wstring, Texture_DX11::W> Texture_DX11::m_loadedTextures;
+			hlp::LoadOnceContainer<Texture_DX11> Texture_DX11::m_loadedTextures;
 			void Texture_DX11::ClearReleasedTextures()
 			{
-				for (auto tex : m_loadedTextures)
-				{
-					if (tex.second.expired())
-					{
-						m_loadedTextures.erase(tex.first);
-						return;
-					}
-				}
+				m_loadedTextures.Cleanup();
 			}
 			COM_Ptr<ID3D11ShaderResourceView> Texture_DX11::CreateTexture(Graphics_DX11& graphics, void* data, unsigned mipLevels)
 			{
@@ -149,12 +142,13 @@ namespace octdoc
 			}
 			Texture_DX11::P Texture_DX11::CreateP(Graphics_DX11& graphics, const wchar_t* filename, unsigned mipLevels)
 			{
-				auto tex = m_loadedTextures.find(filename);
-				if (tex != m_loadedTextures.end())
-					return tex->second.lock();
-				Texture_DX11::P texture = std::make_shared<Texture_DX11>(graphics, filename, mipLevels);
-				m_loadedTextures[filename] = texture;
-				return texture;
+				Texture_DX11::P tex = m_loadedTextures.Find(filename);
+				if (tex == nullptr)
+				{
+					tex = std::make_shared<Texture_DX11>(graphics, filename, mipLevels);
+					m_loadedTextures.Add(filename, tex);
+				}
+				return tex;
 			}
 			Texture_DX11::U Texture_DX11::CreateU(Graphics_DX11& graphics, const wchar_t* filename, unsigned mipLevels)
 			{

@@ -29,22 +29,25 @@ namespace octdoc
 				COM_Ptr<ID3D11RenderTargetView> m_renderTargetView;
 				COM_Ptr<ID3D11Texture2D> m_depthBuffer;
 				COM_Ptr<ID3D11DepthStencilView> m_depthStencilView;
-				COM_Ptr<ID3D11DepthStencilState> m_depthStencilState_ZEnabled;
-				COM_Ptr<ID3D11DepthStencilState> m_depthStencilState_ZDisabled;
-				COM_Ptr<ID3D11RasterizerState> m_rasterizerWireframe;
-				COM_Ptr<ID3D11RasterizerState> m_rasterizerSolid;
-				COM_Ptr<ID3D11BlendState> m_blendState_alphaOn;
-				COM_Ptr<ID3D11BlendState> m_blendState_alphaOff;
+				COM_Ptr<ID3D11DepthStencilState> m_depthStencilState;
+				COM_Ptr<ID3D11RasterizerState> m_rasterizerState;
+				COM_Ptr<ID3D11BlendState> m_blendState;
 				D3D11_VIEWPORT m_viewPort;
+				D3D_FEATURE_LEVEL m_featureLevel;
+				bool m_alphaBlendingOn;
+				bool m_ZBufferOn;
+				bool m_backfaceCullingOn;
+				bool m_faceFillOn;
 
 			private:
 				void CreateGraphicsWindow();
 				void CreateDevice();
 				void CreateSwapChain();
 				void CreateRenderTarget();
+				void CreateDepthStencil();
 				void SetViewPort();
-				void CreateRasterizerStates();
-				void CreateBlendStates();
+				void CreateRasterizerState();
+				void CreateBlendState();
 				void InitGraphics();
 
 			public:
@@ -65,6 +68,7 @@ namespace octdoc
 				virtual void ClearRenderTarget(float *color) override;
 				virtual void Present() override;
 
+				virtual void HideFaceBackside(bool hide) override;
 				virtual void EnableAlphaBlending(bool blend) override;
 				virtual void EnableZBuffer(bool enable) override;
 				virtual void SetPrimitiveTopology_Points() override;
@@ -80,6 +84,7 @@ namespace octdoc
 				inline HWND getHWND() { return m_hwnd; }
 				inline ID3D11DeviceContext* getContext() { return m_context; }
 				inline ID3D11Device* getDevice() { return m_device; }
+				inline D3D_FEATURE_LEVEL getFeatureLevel() { return m_featureLevel; }
 			};
 		}
 	}

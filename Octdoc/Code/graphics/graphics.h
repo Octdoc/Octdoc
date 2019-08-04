@@ -45,6 +45,7 @@ namespace octdoc
 			virtual void ClearRenderTarget(float *color) = 0;
 			virtual void Present() = 0;
 
+			virtual void HideFaceBackside(bool hide) = 0;
 			virtual void EnableAlphaBlending(bool blend) = 0;
 			virtual void EnableZBuffer(bool enable) = 0;
 			virtual void SetPrimitiveTopology_Points() = 0;

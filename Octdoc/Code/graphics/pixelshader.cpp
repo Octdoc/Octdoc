@@ -4,6 +4,7 @@ namespace octdoc
 {
 	namespace gfx
 	{
+		PixelShader::~PixelShader() {}
 		PixelShader::P PixelShader::CreateP(Graphics& graphics, const wchar_t *shaderFileName)
 		{
 			switch (graphics.getGfxEngine())
@@ -37,6 +38,24 @@ namespace octdoc
 			{
 			case GraphicsEngine::DirectX11:
 				return dx11::PixelShader_DX11::CreateU((dx11::Graphics_DX11&)graphics, modelType);
+			}
+			return nullptr;
+		}
+		PixelShader::P PixelShader::CreatePFromString(Graphics& graphics, const char* shaderCode)
+		{
+			switch (graphics.getGfxEngine())
+			{
+			case GraphicsEngine::DirectX11:
+				return dx11::PixelShader_DX11::CreatePFromString((dx11::Graphics_DX11&)graphics, shaderCode);
+			}
+			return nullptr;
+		}
+		PixelShader::U PixelShader::CreateUFromString(Graphics& graphics, const char* shaderCode)
+		{
+			switch (graphics.getGfxEngine())
+			{
+			case GraphicsEngine::DirectX11:
+				return dx11::PixelShader_DX11::CreateUFromString((dx11::Graphics_DX11&)graphics, shaderCode);
 			}
 			return nullptr;
 		}

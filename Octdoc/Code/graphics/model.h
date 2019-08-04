@@ -28,6 +28,7 @@ namespace octdoc
 			static Model::U CreateU(Graphics& graphics, hlp::ModelLoader& loader);
 
 			inline unsigned getGroupCount() { return (unsigned)m_groups.size(); }
+			inline unsigned getModelType() { return m_modelType; }
 			virtual void SetBuffersToRender(Graphics& graphics) = 0;
 			virtual void RenderGroup(Graphics& graphics, unsigned index) = 0;
 			virtual void RenderAll(Graphics& graphics) = 0;

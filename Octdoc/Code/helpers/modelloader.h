@@ -81,6 +81,8 @@ namespace octdoc
 			virtual void LoadModel(const wchar_t* filename);
 			void Clear();
 
+			void CreateTerrain(unsigned char* pixels, int width, int height, mth::float2 position, mth::float2 size, float minHeight, float maxHeight, unsigned modelType);
+
 			void CreateSphere(mth::float3 centre, float radius, int longitudes, int latitudes, unsigned modelType);
 			void CreateCube(mth::float3 position, mth::float3 size, unsigned modelType);
 			void CreateQuad(mth::float2 xzposition, mth::float2 xzsize, unsigned modelType);

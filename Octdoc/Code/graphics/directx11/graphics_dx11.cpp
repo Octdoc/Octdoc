@@ -60,9 +60,18 @@ namespace octdoc
 			}
 			void Graphics_DX11::CreateDevice()
 			{
-				D3D_FEATURE_LEVEL featureLevel;
+#if 1
 				HRESULT hr = D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr,
-					/*D3D11_CREATE_DEVICE_DEBUG*/ 0, nullptr, 0, D3D11_SDK_VERSION, &m_device, &featureLevel, &m_context);
+					/*D3D11_CREATE_DEVICE_DEBUG*/ 0, nullptr, 0, D3D11_SDK_VERSION, &m_device, &m_featureLevel, &m_context);
+#else
+				D3D_FEATURE_LEVEL featureLevels[] = {
+					D3D_FEATURE_LEVEL_10_0
+				};
+				HRESULT hr = D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr,
+					/*D3D11_CREATE_DEVICE_DEBUG*/ 0, featureLevels, 
+					sizeof(featureLevels) / sizeof(D3D_FEATURE_LEVEL),
+					D3D11_SDK_VERSION, &m_device, &m_featureLevel, &m_context);
+#endif
 				if (FAILED(hr))
 					throw std::exception("Failed to create device");
 			}
@@ -109,13 +118,13 @@ namespace octdoc
 				COM_Ptr<IDXGIDevice> dxgi_device;
 				COM_Ptr<IDXGIAdapter> dxgi_adapter;
 				COM_Ptr<IDXGIFactory> dxgi_factory;
-				hr = m_device->QueryInterface(__uuidof(IDXGIDevice), (void**)&dxgi_device);
+				hr = m_device->QueryInterface(__uuidof(IDXGIDevice), (void**)& dxgi_device);
 				if (FAILED(hr))
 					throw std::exception("Failed to query DXGI device");
-				hr = dxgi_device->GetParent(__uuidof(IDXGIAdapter), (void**)&dxgi_adapter);
+				hr = dxgi_device->GetParent(__uuidof(IDXGIAdapter), (void**)& dxgi_adapter);
 				if (FAILED(hr))
 					throw std::exception("Failed to get adapter");
-				hr = dxgi_adapter->GetParent(__uuidof(IDXGIFactory), (void**)&dxgi_factory);
+				hr = dxgi_adapter->GetParent(__uuidof(IDXGIFactory), (void**)& dxgi_factory);
 				if (FAILED(hr))
 					throw std::exception("Failed to get factory");
 
@@ -163,9 +172,12 @@ namespace octdoc
 				hr = m_device->CreateDepthStencilView(m_depthBuffer, nullptr, &m_depthStencilView);
 				if (FAILED(hr))
 					throw std::exception("Failed to create depth stencil view");
-
+				m_context->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
+			}
+			void Graphics_DX11::CreateDepthStencil()
+			{
 				D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
-				depthStencilDesc.DepthEnable = true;
+				depthStencilDesc.DepthEnable = m_ZBufferOn;
 				depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 				depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
 				depthStencilDesc.StencilEnable = true;
@@ -179,18 +191,10 @@ namespace octdoc
 				depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
 				depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 				depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-
-				depthStencilDesc.DepthEnable = true;
-				hr = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState_ZEnabled);
+				HRESULT hr = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState);
 				if (FAILED(hr))
 					throw std::exception("Failed to create depth stencil state.");
-				depthStencilDesc.DepthEnable = false;
-				hr = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState_ZDisabled);
-				if (FAILED(hr))
-					throw std::exception("Failed to create depth stencil state.");
-
-				m_context->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
-				m_context->OMSetDepthStencilState(m_depthStencilState_ZEnabled, 0);
+				m_context->OMSetDepthStencilState(m_depthStencilState, 0);
 			}
 			void Graphics_DX11::SetViewPort()
 			{
@@ -202,12 +206,13 @@ namespace octdoc
 				m_viewPort.MaxDepth = 1.0f;
 				m_context->RSSetViewports(1, &m_viewPort);
 			}
-			void Graphics_DX11::CreateRasterizerStates()
+			void Graphics_DX11::CreateRasterizerState()
 			{
 				HRESULT hr;
 				D3D11_RASTERIZER_DESC rasterizerDesc{};
 				rasterizerDesc.AntialiasedLineEnable = m_settings.antiAliasing;
-				rasterizerDesc.CullMode = D3D11_CULL_BACK;
+				rasterizerDesc.FillMode = m_faceFillOn ? D3D11_FILL_SOLID : D3D11_FILL_WIREFRAME;
+				rasterizerDesc.CullMode = m_backfaceCullingOn ? D3D11_CULL_BACK : D3D11_CULL_NONE;
 				rasterizerDesc.DepthBias = 0;
 				rasterizerDesc.DepthBiasClamp = 0.0f;
 				rasterizerDesc.DepthClipEnable = true;
@@ -216,20 +221,14 @@ namespace octdoc
 				rasterizerDesc.ScissorEnable = false;
 				rasterizerDesc.SlopeScaledDepthBias = 0.0f;
 
-				rasterizerDesc.FillMode = D3D11_FILL_SOLID;
-				hr = m_device->CreateRasterizerState(&rasterizerDesc, &m_rasterizerSolid);
+				hr = m_device->CreateRasterizerState(&rasterizerDesc, &m_rasterizerState);
 				if (FAILED(hr))
 					throw std::exception("Failed to create rasterizer state");
 
-				rasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
-				hr = m_device->CreateRasterizerState(&rasterizerDesc, &m_rasterizerWireframe);
-				if (FAILED(hr))
-					throw std::exception("Failed to create rasterizer state");
-
-				m_context->RSSetState(m_rasterizerSolid);
+				m_context->RSSetState(m_rasterizerState);
 			}
 
-			void Graphics_DX11::CreateBlendStates()
+			void Graphics_DX11::CreateBlendState()
 			{
 				HRESULT result;
 				D3D11_BLEND_DESC blendDesc{};
@@ -243,26 +242,26 @@ namespace octdoc
 				blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
 
 				blendDesc.RenderTarget[0].BlendEnable = true;
-				result = m_device->CreateBlendState(&blendDesc, &m_blendState_alphaOn);
+				result = m_device->CreateBlendState(&blendDesc, &m_blendState);
 				if (FAILED(result))
 					throw std::exception("Failed to create blend state");
 
-				blendDesc.RenderTarget[0].BlendEnable = false;
-				result = m_device->CreateBlendState(&blendDesc, &m_blendState_alphaOff);
-				if (FAILED(result))
-					throw std::exception("Failed to create blend state");
-
-				EnableAlphaBlending(true);
+				float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+				m_context->OMSetBlendState(m_blendState, blendFactor, 0xffffffff);
 			}
 			void Graphics_DX11::InitGraphics()
 			{
+				m_alphaBlendingOn = true;
+				m_ZBufferOn = true;
+				m_backfaceCullingOn = true;
+				m_faceFillOn = true;
 				CreateDevice();
 				CreateSwapChain();
 				CreateRenderTarget();
 				SetViewPort();
-				CreateRasterizerStates();
-				CreateBlendStates();
-			}			
+				CreateRasterizerState();
+				CreateBlendState();
+			}
 			LRESULT Graphics_DX11::MessageHandler(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 			{
 				return m_input.HandleMessage(hwnd, msg, wparam, lparam);
@@ -277,8 +276,6 @@ namespace octdoc
 					m_renderTargetView.Release();
 					m_depthBuffer.Release();
 					m_depthStencilView.Release();
-					m_depthStencilState_ZDisabled.Release();
-					m_depthStencilState_ZEnabled.Release();
 					CreateSwapChain();
 					CreateRenderTarget();
 					SetViewPort();
@@ -346,7 +343,7 @@ namespace octdoc
 				float clearColor[] = { r, g, b, a };
 				ClearRenderTarget(clearColor);
 			}
-			void Graphics_DX11::ClearRenderTarget(float *color)
+			void Graphics_DX11::ClearRenderTarget(float* color)
 			{
 				m_context->ClearRenderTargetView(m_renderTargetView, color);
 				m_context->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
@@ -355,14 +352,29 @@ namespace octdoc
 			{
 				m_swapChain->Present(m_settings.vsyncEnable ? 1 : 0, 0);
 			}
+			void Graphics_DX11::HideFaceBackside(bool hide)
+			{
+				if (m_backfaceCullingOn != hide)
+				{
+					m_backfaceCullingOn = hide;
+					CreateRasterizerState();
+				}
+			}
 			void Graphics_DX11::EnableAlphaBlending(bool blend)
 			{
-				float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-				m_context->OMSetBlendState(blend ? m_blendState_alphaOn : m_blendState_alphaOff, blendFactor, 0xffffffff);
+				if (m_alphaBlendingOn != blend)
+				{
+					m_alphaBlendingOn = blend;
+					CreateBlendState();
+				}
 			}
 			void Graphics_DX11::EnableZBuffer(bool enable)
 			{
-				m_context->OMSetDepthStencilState(enable ? m_depthStencilState_ZEnabled : m_depthStencilState_ZDisabled, 0);
+				if (m_ZBufferOn != enable)
+				{
+					m_ZBufferOn = enable;
+					CreateDepthStencil();
+				}
 			}
 			void Graphics_DX11::SetPrimitiveTopology_Points()
 			{
@@ -378,13 +390,21 @@ namespace octdoc
 			}
 			void Graphics_DX11::SetFillMode_Solid()
 			{
-				m_context->RSSetState(m_rasterizerSolid);
+				if (!m_faceFillOn)
+				{
+					m_faceFillOn = true;
+					CreateRasterizerState();
+				}
 			}
 			void Graphics_DX11::SetFillMode_Wireframe()
 			{
-				m_context->RSSetState(m_rasterizerWireframe);
+				if (m_faceFillOn)
+				{
+					m_faceFillOn = false;
+					CreateRasterizerState();
+				}
 			}
-			void Graphics_DX11::SetWindowTitle(const wchar_t *title)
+			void Graphics_DX11::SetWindowTitle(const wchar_t* title)
 			{
 				SetWindowText(m_hwnd, title);
 			}

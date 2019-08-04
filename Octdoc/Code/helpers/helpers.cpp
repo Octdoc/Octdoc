@@ -39,11 +39,13 @@ namespace octdoc
 			for (offset = 0; isspace(buffer[offset]); offset++);
 			dst = buffer + offset;
 		}
-		std::wstring GetFileExtension(const wchar_t* filename)
+		std::wstring GetFileExtension(const wchar_t* fn)
 		{
 			std::wstring ext;
+			std::wstring filename(fn);
 			int lastDotIndex = -1;
-			for (int i = 0; filename[i]; i++)
+			int i;
+			for (i = 0; filename[i]; i++)
 				if (filename[i] == '.')
 					lastDotIndex = i;
 			if (lastDotIndex > 0)

@@ -8,17 +8,30 @@ namespace octdoc
 	{
 		namespace dx11
 		{
-			std::map<std::wstring, VertexShader_DX11::W> VertexShader_DX11::m_loadedShaders;
+			hlp::LoadOnceContainer<VertexShader_DX11> VertexShader_DX11::m_loadedShaders;
 			void VertexShader_DX11::ClearReleasedShaders()
 			{
-				for (auto shader : m_loadedShaders)
+				m_loadedShaders.Cleanup();
+			}
+			COM_Ptr<ID3DBlob> VertexShader_DX11::CompileVertexShader(Graphics_DX11& graphics, std::string& shaderCode)
+			{
+				const char* target = nullptr;
+				switch (graphics.getFeatureLevel())
 				{
-					if (shader.second.expired())
-					{
-						m_loadedShaders.erase(shader.first);
-						return;
-					}
+				case D3D_FEATURE_LEVEL_10_0:
+					target = "vs_4_0";
+					break;
+				case D3D_FEATURE_LEVEL_10_1:
+					target = "vs_4_1";
+					break;
+				case D3D_FEATURE_LEVEL_11_0:
+				case D3D_FEATURE_LEVEL_11_1:
+					target = "vs_5_0";
+					break;
+				default:
+					target = "vs_4_0";
 				}
+				return CompileShader(shaderCode, "main", target, L"shadererror.txt");
 			}
 			void VertexShader_DX11::CreateVertexShader(Graphics_DX11& graphics, ID3DBlob* shaderBuffer)
 			{
@@ -97,7 +110,15 @@ namespace octdoc
 					shaderCode += "output.tangent=mul(input.tangent,(float3x3)worldMatrix);";
 				shaderCode += "return output;}";
 
-				COM_Ptr<ID3DBlob> shaderBuffer = CompileShader(shaderCode, "main", "vs_5_0", L"shadererror.txt");
+				COM_Ptr<ID3DBlob> shaderBuffer = CompileVertexShader(graphics, shaderCode);
+				CreateVertexShader(graphics, shaderBuffer);
+				CreateInputLayout(graphics, shaderBuffer);
+			}
+			VertexShader_DX11::VertexShader_DX11(Graphics_DX11& graphics, const char* shaderCode, unsigned modelType)
+			{
+				m_modelType = modelType;
+				std::string code(shaderCode);
+				COM_Ptr<ID3DBlob> shaderBuffer = CompileVertexShader(graphics, code);
 				CreateVertexShader(graphics, shaderBuffer);
 				CreateInputLayout(graphics, shaderBuffer);
 			}
@@ -107,7 +128,13 @@ namespace octdoc
 			}
 			VertexShader_DX11::P VertexShader_DX11::CreateP(Graphics_DX11& graphics, LPCWSTR shaderFileName, unsigned modelType)
 			{
-				return std::make_shared<VertexShader_DX11>(graphics, shaderFileName, modelType);
+				VertexShader_DX11::P vs = m_loadedShaders.Find(shaderFileName);
+				if (vs == nullptr)
+				{
+					vs = std::make_shared<VertexShader_DX11>(graphics, shaderFileName, modelType);
+					m_loadedShaders.Add(shaderFileName, vs);
+				}
+				return vs;
 			}
 			VertexShader_DX11::U VertexShader_DX11::CreateU(Graphics_DX11& graphics, LPCWSTR shaderFileName, unsigned modelType)
 			{
@@ -120,6 +147,14 @@ namespace octdoc
 			VertexShader_DX11::U VertexShader_DX11::CreateU(Graphics_DX11& graphics, unsigned modelType)
 			{
 				return std::make_unique<VertexShader_DX11>(graphics, modelType);
+			}
+			VertexShader_DX11::P VertexShader_DX11::CreatePFromString(Graphics_DX11& graphics, const char* shaderCode, unsigned modelType)
+			{
+				return std::make_shared<VertexShader_DX11>(graphics, shaderCode, modelType);
+			}
+			VertexShader_DX11::U VertexShader_DX11::CreateUFromString(Graphics_DX11& graphics, const char* shaderCode, unsigned modelType)
+			{
+				return std::make_unique<VertexShader_DX11>(graphics, shaderCode, modelType);
 			}
 			void VertexShader_DX11::SetShaderToRender(Graphics& graphics)
 			{

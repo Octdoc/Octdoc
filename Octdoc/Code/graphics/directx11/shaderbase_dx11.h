@@ -10,7 +10,7 @@ namespace octdoc
 		namespace dx11
 		{
 			COM_Ptr<ID3DBlob> LoadShaderCode(LPCWSTR filename);
-			COM_Ptr<ID3DBlob> CompileShader(std::string& shaderCode, const char* entry, const char* target, const wchar_t* errorOutputFile);
+			COM_Ptr<ID3DBlob> CompileShader(const std::string& shaderCode, const char* entry, const char* target, const wchar_t* errorOutputFile);
 		}
 	}
 }

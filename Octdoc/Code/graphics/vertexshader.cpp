@@ -4,6 +4,7 @@ namespace octdoc
 {
 	namespace gfx
 	{
+		VertexShader::~VertexShader() {}
 		VertexShader::P VertexShader::CreateP(Graphics& graphics, const wchar_t *shaderFileName, unsigned modelType)
 		{
 			switch (graphics.getGfxEngine())
@@ -37,6 +38,24 @@ namespace octdoc
 			{
 			case GraphicsEngine::DirectX11:
 				return dx11::VertexShader_DX11::CreateU((dx11::Graphics_DX11&)graphics, modelType);
+			}
+			return nullptr;
+		}
+		VertexShader::P VertexShader::CreatePFromString(Graphics& graphics, const char* shaderCode, unsigned modelType)
+		{
+			switch (graphics.getGfxEngine())
+			{
+			case GraphicsEngine::DirectX11:
+				return dx11::VertexShader_DX11::CreatePFromString((dx11::Graphics_DX11&)graphics, shaderCode, modelType);
+			}
+			return nullptr;
+		}
+		VertexShader::U VertexShader::CreateUFromString(Graphics& graphics, const char* shaderCode, unsigned modelType)
+		{
+			switch (graphics.getGfxEngine())
+			{
+			case GraphicsEngine::DirectX11:
+				return dx11::VertexShader_DX11::CreateUFromString((dx11::Graphics_DX11&)graphics, shaderCode, modelType);
 			}
 			return nullptr;
 		}

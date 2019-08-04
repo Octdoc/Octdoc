@@ -37,6 +37,9 @@
     <Filter Include="Source Files\physics">
       <UniqueIdentifier>{2b3fca41-ad2b-4849-b7f1-3b9e03eb544a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\graphics\scene">
+      <UniqueIdentifier>{58e33351-0143-411b-9cbf-6edeaa5cb011}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\graphics\graphics.cpp">
@@ -155,6 +158,9 @@
     </ClCompile>
     <ClCompile Include="Code\graphics\directx11\input_dx11.cpp">
       <Filter>Source Files\graphics\directx11</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\graphics\scene\scene.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -277,6 +283,15 @@
     </ClInclude>
     <ClInclude Include="Code\graphics\input.h">
       <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics\scene\scene.h">
+      <Filter>Header Files\graphics\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\helpers\loadoncecontainer.h">
+      <Filter>Header Files\helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\octdoc.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

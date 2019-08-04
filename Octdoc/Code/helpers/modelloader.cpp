@@ -89,6 +89,40 @@ namespace octdoc
 			m_bareFileName.clear();
 			m_extension.clear();
 		}
+		void ModelLoader::CreateTerrain(unsigned char* pixels, int width, int height, mth::float2 position, mth::float2 size, float minHeight, float maxHeight, unsigned modelType)
+		{
+			int vertexCount = width * height;
+			std::vector<gfx::VertexElement> vertices;
+			std::vector<unsigned> indices;
+			vertices.resize(vertexCount * 5);
+			for (int x = 0; x < width; x++)
+			{
+				for (int y = 0; y < height; y++)
+				{
+					vertices[(y * width + x) * 5 + 0] = x * (size.x) / width + position.x;
+					vertices[(y * width + x) * 5 + 1] = pixels[(y * width + x) * 4] / 255.0f * (maxHeight - minHeight) + minHeight;
+					vertices[(y * width + x) * 5 + 2] = y * (size.y) / height + position.y;
+					vertices[(y * width + x) * 5 + 3] = float(x) / float(width - 1);
+					vertices[(y * width + x) * 5 + 4] = float(y) / float(height - 1);
+				}
+			}
+			indices.resize((width - 1) * (height - 1) * 6);
+			int counter = 0;
+			for (int x = 0; x < width - 1; x++)
+			{
+				for (int y = 0; y < height - 1; y++)
+				{
+					indices[counter++] = (y + 0) * width + x + 0;
+					indices[counter++] = (y + 1) * width + x + 0;
+					indices[counter++] = (y + 0) * width + x + 1;
+					indices[counter++] = (y + 1) * width + x + 1;
+					indices[counter++] = (y + 0) * width + x + 1;
+					indices[counter++] = (y + 1) * width + x + 0;
+				}
+			}
+			Create(vertices.data(), vertexCount, indices.data(), indices.size(), gfx::ModelType::PT);
+			ChangeModelType(modelType);
+		}
 		void ModelLoader::CreateSphere(mth::float3 centre, float radius, int longitudes, int latitudes, unsigned modelType)
 		{
 			std::vector<mth::float3> vertices(longitudes * latitudes + 2);
@@ -187,10 +221,10 @@ namespace octdoc
 		void ModelLoader::CreateFullScreenQuad()
 		{
 			float vertices[] = {
-			1.0f, 0.0f, 1.0f,		1.0f, 1.0f,
-			1.0f, 1.0f, 1.0f,		1.0f, 0.0f,
-			0.0f, 1.0f, 0.0f,		0.0f, 0.0f,
-			0.0f, 0.0f, 1.0f,		0.0f, 1.0f
+			1.0f,  -1.0f, 1.0f,		1.0f, 1.0f,
+			1.0f,  1.0f,  1.0f,		1.0f, 0.0f,
+			-1.0f, 1.0f,  0.0f,		0.0f, 0.0f,
+			-1.0f, -1.0f, 1.0f,		0.0f, 1.0f
 			};
 			unsigned indices[] = { 0, 2, 1, 0, 3, 2 };
 			Create(vertices, 4, indices, 6, gfx::ModelType::PT);

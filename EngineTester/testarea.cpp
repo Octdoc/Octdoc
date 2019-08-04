@@ -66,8 +66,6 @@ TestArea::TestArea() :m_cameraController(m_camera) {}
 void TestArea::OnStart(octdoc::gfx::Graphics& graphics)
 {
 	m_gfx = &graphics;
-	m_cameraBuffer = octdoc::gfx::ShaderBuffer::CreateP(graphics, sizeof(octdoc::mth::float4x4));
-	m_lightBuffer = octdoc::gfx::ShaderBuffer::CreateP(graphics, sizeof(float) * 8);
 	octdoc::hlp::ModelLoader loader;
 
 #ifdef ELLIPSOID_COLLISION
@@ -106,12 +104,14 @@ void TestArea::OnStart(octdoc::gfx::Graphics& graphics)
 	m_square = octdoc::physx::Collider_Mesh::CreateU(loader);
 
 	m_camera.position.z = -5.0f;
-	m_sampler = octdoc::gfx::SamplerState::CreateP(graphics, true, true);
-	m_sampler->SetToPixelShader(graphics);
 
 	m_keyFlags = 0;
 
 	m_fpsTimer.SetMaxFrameCount(100);
+
+	m_scene = octdoc::gfx::Scene::CreateU(graphics, m_camera);
+	m_scene->AddEntity(m_entity);
+	m_scene->AddEntity(m_floor);
 }
 
 void TestArea::OnKeyDown(octdoc::gfx::KeyEvent& e)
@@ -182,20 +182,8 @@ void TestArea::OnUpdate(octdoc::gfx::Graphics& graphics, double deltaTime)
 	graphics.SetWindowTitle(std::to_wstring(m_fpsTimer.GetFPS()).c_str());
 
 	if (deltaTime > 0.02f) deltaTime = 0.02f;
-	octdoc::mth::float4x4 cameraBuffer;
 	m_cameraController.Update(deltaTime);
 	m_camera.Update();
-	cameraBuffer = m_camera.GetCameraMatrix();
-	m_cameraBuffer->WriteBuffer(graphics, &cameraBuffer);
-	m_cameraBuffer->SetToVertexShader(graphics, 0);
-
-	float lightBuffer[] = {
-		1.0f, 1.0f, 1.0f, 1.0f,
-		m_camera.position.x, m_camera.position.y, m_camera.position.z,
-		0.7f
-	};
-	m_lightBuffer->WriteBuffer(graphics, lightBuffer);
-	m_lightBuffer->SetToPixelShader(graphics, 0);
 
 	double speed = 4 * deltaTime;
 	octdoc::mth::double3 movement;
@@ -238,8 +226,7 @@ void TestArea::OnUpdate(octdoc::gfx::Graphics& graphics, double deltaTime)
 	m_entity->scale = m_ellipsoid->scale.WithType<float>();
 
 	graphics.ClearRenderTarget(0.75f, 0.75f, 0.875f);
-	m_floor->Render(graphics);
-	m_entity->Render(graphics);
+	m_scene->Render();
 	graphics.Present();
 }
 

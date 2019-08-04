@@ -15,8 +15,6 @@ namespace octdoc
 		{
 			SMART_PTR(Material)
 		private:
-			VertexShader::P m_vertexShader;
-			PixelShader::P m_pixelShader;
 			Texture::P m_texture;
 			Texture::P m_normalmap;
 

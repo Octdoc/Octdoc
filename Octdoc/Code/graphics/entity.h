@@ -13,8 +13,6 @@ namespace octdoc
 		private:
 			Model::P m_model;
 			std::vector<Material::P> m_materials;
-			ShaderBuffer::P m_worldMatrixBuffer;
-			ShaderBuffer::P m_colorBuffer;
 			mth::float4 m_color;
 
 		public:
